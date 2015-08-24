@@ -6,7 +6,7 @@ var bootState = {
     
     create: function () {
         //Initial game settings
-        game.stage.backgroundColor = '#000';
+        game.stage.backgroundColor = '#0000CC';
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
         //Start the load state

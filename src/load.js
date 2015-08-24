@@ -7,7 +7,8 @@ var loadState = {
         game.load.setPreloadSprite(progressBar);
         
         //Load assets
-        //game.load.image('name', '../assets/png.png');
+        game.load.image('button', '../assets/empty.png');
+        game.load.image('red', '../assets/avatars/red.png');
     },
     
     create: function () {
