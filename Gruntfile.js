@@ -9,7 +9,7 @@ module.exports = function(grunt) {
                     sourceMap : true,
                     sourceMapName : 'build/sourceMap.map'
                 },
-                src : ['src/boot.js', 'src/load.js', 'src/menu.js', 'src/play.js', 'src/game.js'],
+                src : ['src/boot.js', 'src/load.js', 'src/menu.js', 'src/makeMenu.js', 'src/playMenu.js', 'src/make.js', 'src/play.js', 'src/game.js'],
                 dest : 'build/JeoMaker.min.js'
             }
         }

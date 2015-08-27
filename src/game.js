@@ -1,23 +1,24 @@
 //Initialize Phaser
-var w = window.innerWidth * window.devicePixelRatio;
-var h = window.innerHeight * window.devicePixelRatio;
+var w = window.innerWidth;
+var h = window.innerHeight;
 var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 
-var winRes = function() {
-    w = window.innerWidth * window.devicePixelRatio;
-    h = window.innerHeight * window.devicePixelRatio;
-    heightBox = (h - (menuBarHeight + (padding * 7))) / 6;
-    widthBox = (w - (padding * 7)) / 6;
+//Resize game, called from a game state when the game is resized
+/*var winRes = function() {
+    w = window.innerWidth;
+    h = window.innerHeight;
+    calcBoxDim()
     
     if (game.renderType === Phaser.WEBGL) {
         game.renderer.resize(w, h);
     } else if (game.renderType === Phaser.CANVAS) {
+        //code doesn't work
         game.width = w;
         game.height = h;
         game.stage.bounds.width = w;
         game.stage.bounds.height = h;
     }
-};
+};*/
 
 //Global variables can be accessed across all states
 //game.global = {
@@ -26,10 +27,14 @@ var winRes = function() {
 //};
 
 //Get Dimensions
-var padding = 10;
-var menuBarHeight = 70;
-var heightBox = (h - (menuBarHeight + (padding * 7))) / 6;
-var widthBox = (w - (padding * 7)) / 6;
+var PADDING = 10;
+var MENU_BAR_HEIGHT = 70;
+var heightBox, widthBox;
+var calcBoxDim = function () {
+    heightBox = (h - (MENU_BAR_HEIGHT + (PADDING * 7))) / 6;
+    widthBox = (w - (PADDING * 7)) / 6;
+}
+calcBoxDim()
 
 //Answer/Question Object
 var AQ = function() {
@@ -128,6 +133,9 @@ LabelButton.prototype.setLabel = function( label ) {
 game.state.add('boot', bootState);
 game.state.add('load', loadState);
 game.state.add('menu', menuState);
+game.state.add('makeMenu', makeMenuState);
+game.state.add('playMenu', playMenuState);
+game.state.add('make', makeState);
 game.state.add('play', playState);
 
 game.state.start('boot');
