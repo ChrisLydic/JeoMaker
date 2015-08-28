@@ -27,17 +27,27 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //};
 
 //Make an invisible button
-var makeButton = function (x, y, width, height, funct) {
+var RectButton = function (x, y, width, height, down, over, out) {
     var btn = new Phaser.Rectangle(x, y, width, height);
     
     var handlePointerDown = function(pointer){
         if ( btn.contains(pointer.x, pointer.y) ) {
-            funct();
+            down();
         }
     };
     
     game.input.onDown.add(handlePointerDown);
+    
+    this.isOver = function (pointer) {
+        if ( btn.contains(pointer.x, pointer.y) ) {
+            over();
+        } else {
+            out();
+        }
+    }
 };
+
+RectButton.prototype.constructor = RectButton;
 
 //A partial function allows passing a function as an argument with arguments inside it: use partial(funcName, arg1, arg2, ...)
 var partial = function (func) {
