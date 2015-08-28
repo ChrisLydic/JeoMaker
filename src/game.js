@@ -26,6 +26,36 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //    'name': 'val'
 //};
 
+//Make an invisible button
+var makeButton = function (x, y, width, height, funct) {
+    var btn = new Phaser.Rectangle(x, y, width, height);
+    
+    var handlePointerDown = function(pointer){
+        if ( btn.contains(pointer.x, pointer.y) ) {
+            funct();
+        }
+    };
+    
+    game.input.onDown.add(handlePointerDown);
+};
+
+//A partial function allows passing a function as an argument with arguments inside it: use partial(funcName, arg1, arg2, ...)
+var partial = function (func) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return function() {
+    var allArguments = args.concat(Array.prototype.slice.call(arguments));
+    return func.apply(this, allArguments);
+  };
+}
+
+
+
+
+
+
+
+
+
 //Get Dimensions
 var PADDING = 10;
 var MENU_BAR_HEIGHT = 70;
@@ -33,21 +63,21 @@ var heightBox, widthBox;
 var calcBoxDim = function () {
     heightBox = (h - (MENU_BAR_HEIGHT + (PADDING * 7))) / 6;
     widthBox = (w - (PADDING * 7)) / 6;
-}
+};
 calcBoxDim()
 
 //Answer/Question Object
 var AQ = function() {
     this.a = '';
     this.q = '';
-}
+};
 
 AQ.prototype.constructor = AQ;
 
 AQ.prototype.update = function(a, q) {
     this.a = a;
     this.q = q;
-}
+};
 
 //Board Object
 var Board = function(isDouble) {
@@ -56,13 +86,13 @@ var Board = function(isDouble) {
     this.board = [];
     
     for (var i=0; i<5; i++) {
-        board[i] = [new AQ(), new AQ(), new AQ(), new AQ(), new AQ(), new AQ()];
+        this.board[i] = [new AQ(), new AQ(), new AQ(), new AQ(), new AQ(), new AQ()];
     }
     
     if (this.isDouble) {
-        this.money = ['400', '800', '1200', '1600', '2000'];
+        this.money = ['$400', '$800', '$1200', '$1600', '$2000'];
     } else {
-        this.money = ['200', '400', '600', '800', '1000'];
+        this.money = ['$200', '$400', '$600', '$800', '$1000'];
     }
 };
 
@@ -105,8 +135,8 @@ Player.prototype.edit = function(name, avatar){
 };
 
 //LabelButton Object
-var LabelButton = function(label, font, textColor, align, wordWrap, game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame) {
-    Phaser.Button.call(this, game, x, y, key, callback, callbackContext/*, overFrame, outFrame, downFrame, upFrame*/);
+var LabelButton = function(label, font, textColor, align, wordWrap, game, x, y, key, callback, callbackContext) {
+    Phaser.Button.call(this, game, x, y, key, callback, callbackContext);
 
     //Create and style label
     this.anchor.setTo( 0.5, 0.5 );
