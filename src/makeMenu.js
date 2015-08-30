@@ -5,7 +5,7 @@ var makeMenuState = {
         
     },
     
-    makeStart: function(isDouble) {
+    makeStart: function(/*isDouble*/) {
         game.state.start('make');
     },
     

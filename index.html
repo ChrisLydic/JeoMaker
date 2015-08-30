@@ -3,12 +3,29 @@
 <head>
     <meta charset="utf-8">
     <title>Phaser Game</title>
-    
+    <link href="css/main.css" rel="stylesheet" type="text/css">
     <script src="build/phaser.min.js"></script>
     <script src="build/JeoMaker.min.js"></script>
 </head>
 
-<body style="margin:0;">
+<body>
+    
+    <div class="formCont" id="topicForm">
+    <form id="topic">
+        <input type="text" name="topicText" value="Enter the topic" size="25" maxlength="50">
+        <input type="button" name="submit" value="Submit" onclick="toGetInput('topic')">
+    </form>
+    </div>
+    
+    <div class="formCont" id="aqForm">
+    <form id="aq">
+        <textarea name="answer" rows="5" cols="30">Type answer here</textarea>
+        <textarea name="question" rows="5" cols="30">Type question here</textarea>
+        <input type="submit" name="submit" value="Submit" onclick="toGetInput('aq')">
+    </form>
+    </div>
+    
+    
     <div id='gameDiv'></div>
 </body>
 </html>

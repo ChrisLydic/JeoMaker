@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+}
+
+.formCont {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+    background-color: #0000CC;
+
+    display: -webkit-flex;
+	display:  -webkit-box;
+	display:  -ms-flexbox;
+	display:         flex;
+    
+    -webkit-align-items: center;
+     -webkit-flex-align: center;
+         -ms-flex-align: center;
+            align-items: center;
+    -webkit-justify-content: center;
+        -ms-justify-content: center;
+            justify-content: center;
+    
+    display: none;
+}
+
+input,
+textarea {
+    clear: left;
+    float:left;
+    margin: 5px;
+}

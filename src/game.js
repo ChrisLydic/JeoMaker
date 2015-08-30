@@ -26,28 +26,27 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //    'name': 'val'
 //};
 
-//Make an invisible button
-var RectButton = function (x, y, width, height, down, over, out) {
-    var btn = new Phaser.Rectangle(x, y, width, height);
-    
-    var handlePointerDown = function(pointer){
-        if ( btn.contains(pointer.x, pointer.y) ) {
-            down();
-        }
-    };
-    
-    game.input.onDown.add(handlePointerDown);
-    
-    this.isOver = function (pointer) {
-        if ( btn.contains(pointer.x, pointer.y) ) {
-            over();
-        } else {
-            out();
-        }
-    }
-};
+var layers;
 
-RectButton.prototype.constructor = RectButton;
+
+
+var toGetInput=function (id) {
+        makeState.getInput(id);
+};
+    
+
+
+
+
+//Get Dimensions
+var PADDING = 20;
+var MENU_BAR_HEIGHT = 70;
+var heightBox, widthBox;
+var calcBoxDim = function () {
+    heightBox = (h - (MENU_BAR_HEIGHT + (PADDING * 7))) / 6;
+    widthBox = (w - (PADDING * 7)) / 6;
+};
+calcBoxDim()
 
 //A partial function allows passing a function as an argument with arguments inside it: use partial(funcName, arg1, arg2, ...)
 var partial = function (func) {
@@ -56,25 +55,7 @@ var partial = function (func) {
     var allArguments = args.concat(Array.prototype.slice.call(arguments));
     return func.apply(this, allArguments);
   };
-}
-
-
-
-
-
-
-
-
-
-//Get Dimensions
-var PADDING = 10;
-var MENU_BAR_HEIGHT = 70;
-var heightBox, widthBox;
-var calcBoxDim = function () {
-    heightBox = (h - (MENU_BAR_HEIGHT + (PADDING * 7))) / 6;
-    widthBox = (w - (PADDING * 7)) / 6;
 };
-calcBoxDim()
 
 //Answer/Question Object
 var AQ = function() {
@@ -92,7 +73,7 @@ AQ.prototype.update = function(a, q) {
 //Board Object
 var Board = function(isDouble) {
     this.isDouble = isDouble;
-    this.topics = ['', '', '', '', '', ''];
+    this.topics = ['Topic', 'Topic', 'Topic', 'Topic', 'Topic', 'Topic'];
     this.board = [];
     
     for (var i=0; i<5; i++) {
@@ -142,6 +123,48 @@ Player.prototype.changeScore = function(amt){
 Player.prototype.edit = function(name, avatar){
     this.name = name;
     this.avatar = avatar;
+};
+
+//Rectangular button object
+var RectButton = function (x, y, width, height, color, down) {
+    this.isIn = false;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.color = color;
+    this.down = down;
+    this.btn = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
+    var btnDown = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
+    
+    this.graphics = game.add.graphics(0, 0);
+    layers.bgLayer.add(this.graphics);
+    this.draw(this.color, 1);
+    
+    var handlePointerDown = function(pointer){
+        if ( btnDown.contains(pointer.x, pointer.y) ) {
+            down();
+        }
+    };
+    
+    game.input.onDown.add(handlePointerDown);
+};
+
+RectButton.prototype.constructor = RectButton;
+
+RectButton.prototype.isOver = function () {
+        if ( this.btn.contains(game.input.mousePointer.x, game.input.mousePointer.y) && !this.isIn ) {
+            this.draw(0xFFFFFF, 0.1);
+            this.isIn = true;
+        } else if ( !this.btn.contains(game.input.mousePointer.x, game.input.mousePointer.y) && this.isIn ) {
+            this.draw(this.color, 1);
+            this.isIn = false;
+        }
+};
+RectButton.prototype.draw = function (color, opacity) {
+    this.graphics.beginFill(color, opacity);
+    this.graphics.drawRect(this.x, this.y, this.width, this.height);
+    this.graphics.endFill();
 };
 
 //LabelButton Object
