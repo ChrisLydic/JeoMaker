@@ -26,14 +26,31 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //    'name': 'val'
 //};
 
-var layers;
-
-
-
-var toGetInput=function (id) {
-        makeState.getInput(id);
-};
     
+var globalTempVal = {
+    isDouble: false,
+    topic: "",
+    a: "",
+    q: "",
+    ref: [],
+    id: "",
+    newInput: false
+};
+
+var getInput = function (id) {
+    globalTempVal.id = id;
+    var form = document.getElementById(globalTempVal.id);
+    
+    if (globalTempVal.id === 'aqForm') {
+        globalTempVal.a = form.elements["answer"].value;
+        globalTempVal.q = form.elements["question"].value;
+    } else if (globalTempVal.id === 'topicForm') {
+        globalTempVal.topic = form.elements["topicText"].value;
+    }
+    
+    document.getElementById(globalTempVal.id).style.display = 'none';
+    globalTempVal.newInput = true;
+};
 
 
 

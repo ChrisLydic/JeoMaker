@@ -8,45 +8,41 @@ var makeState = {
     },
     
     update: function () {
+        
+        //Mouse over and mouse out check for buttons
         var i;
-        for (i = 0; i < this.buttons.length; i++){
+        for ( i = 0; i < this.buttons.length; i++ ){
             this.buttons[i].isOver();
+        }
+        
+        //Check if input has been submitted
+        if ( globalTempVal.newInput ) {
+            console.log("TEEEHEEE");
+            this.updateBoard();
+            globalTempVal.newInput = false;
+            this.build();
         }
     },
     
-    getInput: function (id) {//id is aq or topic
-        document.getElementById(id).style.display = 'none';
-        var form = document.getElementById (id);
-        console.log(this.ref);
-        if (id === 'aq') {
-            this.tempInput = {
-                answer: form.elements["answer"].value,
-                question: form.elements["question"].value
-            };
-            
-            this.updateAQ(this.ref[0], this.ref[1]);
-        } else if (id === 'topic') {
-            this.tempInput = {
-                topic: form.elements["topicText"].value
-            };
-            
-            this.updateTopic(this.ref);
+    updateBoard: function () {//id is aq or topic
+        if ( globalTempVal.id === 'aqForm' ) {
+            this.updateAQ( globalTempVal.ref[0], globalTempVal.ref[1] );
+        } else if ( globalTempVal.id === 'topicForm' ) {
+            this.updateTopic( globalTempVal.ref[0] );
         }
     },
     
     promptRunner: function (id, ref) {
         document.getElementById(id).style.display = 'flex';
-        this.ref = ref;
-        console.log(this.ref);
+        globalTempVal.ref = ref;
     },
     
     updateTopic: function (col) {
-        this.currBoard.topics[col] = this.tempInput.topic;
-        this.build();
+        this.currBoard.topics[col] = globalTempVal.topic;
     },
     
-    updateAQ: function (row, col) {
-        this.currBoard.board[row][col].update(this.tempInput.answer, this.tempInput.question);
+    updateAQ: function ( row, col ) {
+        this.currBoard.board[row][col].update( globalTempVal.a, globalTempVal.q );
     },
     
     build: function () {
@@ -69,7 +65,7 @@ var makeState = {
                 if (row === 0) {
                     btnColor = 0x00BBFF;
                     
-                    ref = col;
+                    ref = [col];
                     
                     id = topicForm;
                     
