@@ -26,7 +26,11 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //    'name': 'val'
 //};
 
-    
+//The jeo object that is currently loaded
+//Initialized in the makeMenu or playMenu states
+var currBoard;
+
+//Handle HTML text input across states
 var globalTempVal = {
     isDouble: false,
     topic: "",
@@ -37,6 +41,7 @@ var globalTempVal = {
     newInput: false
 };
 
+//Get HTML text input
 var getInput = function (id) {
     globalTempVal.id = id;
     var form = document.getElementById(globalTempVal.id);
@@ -108,6 +113,7 @@ Board.prototype.constructor = Board;
 
 //Jeo Object contains all data needed to make a JeoMaker game
 var Jeo = function(isDouble) {
+    this.curr = "1"; //1 for board 1, 2 for board 2, f for final question
     this.isDouble = isDouble;
     this.b1 = new Board(false);
     if (this.isDouble) {

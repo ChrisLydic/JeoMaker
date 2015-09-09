@@ -1,8 +1,16 @@
 var makeState = {
     
     create: function () {
-        this.jeo = new Jeo(false);
-        this.currBoard = this.jeo.b1;
+        switch(currBoard.curr):
+            case "1":
+                this.currBoard = currBoard.jeo.b1;
+                break;
+            case "2":
+                this.currBoard = currBoard.jeo.b2;
+                break;
+            default:
+                //final question
+                break;
         this.build();
         
     },
@@ -20,7 +28,7 @@ var makeState = {
             console.log("TEEEHEEE");
             this.updateBoard();
             globalTempVal.newInput = false;
-            this.build();
+            game.state.start("make");
         }
     },
     
