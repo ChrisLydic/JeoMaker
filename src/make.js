@@ -70,6 +70,7 @@ var makeState = {
     build: function () {
         layers = {
             bgLayer: this.add.group(),
+            btnLayer: this.add.group(),
             textLayer: this.add.group()
         };
         
@@ -78,7 +79,7 @@ var makeState = {
         var btnColor, row, col, x, y, styles, labelText, heightTopics, ref, id;
         var aqForm = 'aq';
         var topicForm = 'topic';
-                
+        
         for (row = 0; row < 6; row++) {
             for (var col = 0; col < 6; col++) {
                 posX = (PADDING * (col + 1)) + (widthBox * (col));
@@ -126,5 +127,20 @@ var makeState = {
         graphics.beginFill(0x00BBFF);
         graphics.drawRect(0, (PADDING * 7) + (heightBox * 6), w, MENU_BAR_HEIGHT);
         graphics.endFill();
+        
+        var padBar = PADDING/2;
+        var posYBar = (PADDING * 7) + (heightBox * 6) + padBar;
+        
+        if ( currBoard.isDouble ) {
+            this.buttons.push(new RectButton(posX, posYBar, widthBox, heightBox, btnColor, partial(this.promptRunner, id, ref)));
+            this.buttons.push(new RectButton(posX, posYBar, widthBox, heightBox, btnColor, partial(this.promptRunner, id, ref)));
+            this.buttons.push(new RectButton(posX, posYBar, widthBox, heightBox, btnColor, partial(this.promptRunner, id, ref)));
+        } else {
+            this.buttons.push(new RectButton(posX, posYBar, widthBox, heightBox, btnColor, partial(this.promptRunner, id, ref)));
+            this.buttons.push(new RectButton(posX, posYBar, widthBox, heightBox, btnColor, partial(this.promptRunner, id, ref)));
+        }
+        
+        this.buttons.push(new RectButton( padBar, posYBar, widthBox, heightBox, btnColor, partial()));
+        this.buttons.push(new RectButton( w - ( padBar + 100 ), posYBar, widthBox, heightBox, btnColor, partial()));
     }
 };

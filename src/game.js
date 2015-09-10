@@ -131,7 +131,12 @@ var RectButton = function (x, y, width, height, color, down) {
     var btnDown = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
     
     this.graphics = game.add.graphics(0, 0);
-    layers.bgLayer.add(this.graphics);
+    
+    //Error checking in case this function is called from a state without a layers object
+    if ( typeof layers !== undefined ) {
+        layers.btnLayer.add(this.graphics);
+    }
+    
     this.draw(this.color, 1);
     
     var handlePointerDown = function(pointer){
