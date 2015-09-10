@@ -1,18 +1,18 @@
 var makeState = {
     
     create: function () {
-        switch(currBoard.curr):
+        switch(currBoard.curr) {
             case "1":
-                this.currBoard = currBoard.jeo.b1;
+                this.currBoard = currBoard.b1;
                 break;
             case "2":
-                this.currBoard = currBoard.jeo.b2;
+                this.currBoard = currBoard.b2;
                 break;
             default:
                 //final question
                 break;
+        }
         this.build();
-        
     },
     
     update: function () {
@@ -22,35 +22,49 @@ var makeState = {
         for ( i = 0; i < this.buttons.length; i++ ){
             this.buttons[i].isOver();
         }
+
+    },
+    
+    getInput: function (id) {// id is aq or topic
+        var form = document.getElementById(id);
         
-        //Check if input has been submitted
-        if ( globalTempVal.newInput ) {
-            console.log("TEEEHEEE");
-            this.updateBoard();
-            globalTempVal.newInput = false;
-            game.state.start("make");
+        if (id === 'aq') {
+            a = form.elements['answer'].value;
+            q = form.elements['question'].value;
+            this.updateAQ( a, q );
+        } else if (id === 'topic') {
+            topic = form.elements['topicText'].value;
+            this.updateTopic( topic );
         }
+        
+        //container of the forms has Form appended to its name
+        document.getElementById( id + 'Form' ).style.display = 'none';
+        
+        this.build();
     },
     
-    updateBoard: function () {//id is aq or topic
-        if ( globalTempVal.id === 'aqForm' ) {
-            this.updateAQ( globalTempVal.ref[0], globalTempVal.ref[1] );
-        } else if ( globalTempVal.id === 'topicForm' ) {
-            this.updateTopic( globalTempVal.ref[0] );
+    promptRunner: function (id, ref) {///////////////////////////////////////////////////////////////////consider using a phaser button to handle submit
+        window.ref = ref;
+        var bd = makeState.currBoard;
+        var form = document.getElementById(id);
+        //currently using AN for testing
+        if (id === 'aq') {
+            form.elements["answer"].value = bd.board[ window.ref[0] ][ window.ref[1] ].an;
+            form.elements["question"].value = bd.board[ window.ref[0] ][ window.ref[1] ].q;
+            this.updateAQ( a, q );
+        } else if (id === 'topic') {
+            form.elements["topicText"].value = bd.topics[ window.ref[0] ] ;
         }
+        
+        document.getElementById( id + 'Form' ).style.display = 'flex';
     },
     
-    promptRunner: function (id, ref) {
-        document.getElementById(id).style.display = 'flex';
-        globalTempVal.ref = ref;
+    updateTopic: function (topic) {
+        this.currBoard.topics[ window.ref[0] ] = topic;
     },
     
-    updateTopic: function (col) {
-        this.currBoard.topics[col] = globalTempVal.topic;
-    },
-    
-    updateAQ: function ( row, col ) {
-        this.currBoard.board[row][col].update( globalTempVal.a, globalTempVal.q );
+    updateAQ: function ( a, q ) {
+        this.currBoard.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
     },
     
     build: function () {
@@ -62,8 +76,8 @@ var makeState = {
         this.buttons = [];
         
         var btnColor, row, col, x, y, styles, labelText, heightTopics, ref, id;
-        var aqForm = 'aqForm';
-        var topicForm = 'topicForm';
+        var aqForm = 'aq';
+        var topicForm = 'topic';
                 
         for (row = 0; row < 6; row++) {
             for (var col = 0; col < 6; col++) {
@@ -95,7 +109,7 @@ var makeState = {
                     
                     id = aqForm;
                     
-                    labelText = this.currBoard.money[row - 1];
+                    labelText = this.currBoard. money[row - 1];
                     styles = {font: (heightBox * 0.6) + 'px Arial', fill: '#FFFF99'};
                 }
                 

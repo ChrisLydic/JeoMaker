@@ -27,38 +27,8 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //};
 
 //The jeo object that is currently loaded
-//Initialized in the makeMenu or playMenu states
+//Initialized in the makeMenu or playMenu states //MAKE SURE to handle currently loaded board in these menus
 var currBoard;
-
-//Handle HTML text input across states
-var globalTempVal = {
-    isDouble: false,
-    topic: "",
-    a: "",
-    q: "",
-    ref: [],
-    id: "",
-    newInput: false
-};
-
-//Get HTML text input
-var getInput = function (id) {
-    globalTempVal.id = id;
-    var form = document.getElementById(globalTempVal.id);
-    
-    if (globalTempVal.id === 'aqForm') {
-        globalTempVal.a = form.elements["answer"].value;
-        globalTempVal.q = form.elements["question"].value;
-    } else if (globalTempVal.id === 'topicForm') {
-        globalTempVal.topic = form.elements["topicText"].value;
-    }
-    
-    document.getElementById(globalTempVal.id).style.display = 'none';
-    globalTempVal.newInput = true;
-};
-
-
-
 
 //Get Dimensions
 var PADDING = 20;
@@ -81,8 +51,8 @@ var partial = function (func) {
 
 //Answer/Question Object
 var AQ = function() {
-    this.a = '';
-    this.q = '';
+    this.an = 'Answer';
+    this.q = 'Question';
 };
 
 AQ.prototype.constructor = AQ;
