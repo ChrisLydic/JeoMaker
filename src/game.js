@@ -30,6 +30,12 @@ var game = new Phaser.Game(w, h, Phaser.AUTO, 'gameDiv');
 //Initialized in the makeMenu or playMenu states //MAKE SURE to handle currently loaded board in these menus
 var currBoard;
 
+//Colors
+var LIGHT_BLUE = 0x0099FF;
+var BLUE = 0x0055FF;
+var DARK_BLUE = 0x0000CC;
+var PURPLE = 0x4433CC;
+
 //Get Dimensions
 var PADDING = 20;
 var MENU_BAR_HEIGHT = 70;
@@ -51,7 +57,7 @@ var partial = function (func) {
 
 //Answer/Question Object
 var AQ = function() {
-    this.an = 'Answer';
+    this.a = 'Answer';
     this.q = 'Question';
 };
 
@@ -61,6 +67,14 @@ AQ.prototype.update = function(a, q) {
     this.a = a;
     this.q = q;
 };
+//Check if AQ object has been changed from initial state
+AQ.prototype.isComplete = function() {
+    if ( this.a === 'Answer' || this.q === 'Question' ) {
+        return false;
+    } else {
+        return true;
+    }
+};
 
 //Board Object
 var Board = function(isDouble) {
@@ -68,7 +82,7 @@ var Board = function(isDouble) {
     this.topics = ['Topic', 'Topic', 'Topic', 'Topic', 'Topic', 'Topic'];
     this.board = [];
     
-    for (var i=0; i<5; i++) {
+    for (var i = 0; i < 5; i++) {
         this.board[i] = [new AQ(), new AQ(), new AQ(), new AQ(), new AQ(), new AQ()];
     }
     
@@ -100,6 +114,37 @@ Jeo.prototype.setFinalQ = function(q, a) {
 Jeo.prototype.updateFinalQ = function(q, a) {
     this.finalQ.update(q, a);
 };
+Jeo.prototype.isComplete = function() {
+    if ( this.isDouble ) {
+        return ( this.checkBoards( this.b1 ) && this.checkBoards( this.b2 ) );
+    } else {
+        return this.checkBoards( this.b1 );
+    }
+};
+Jeo.prototype.checkBoards = function(bd) {
+    //Check if topics are not changed from initial state
+    for ( var i = 0; i < bd.topics.length; i++ ) {
+        if ( bd.topics[i] === 'Topic' ) {
+            return false;
+        }
+    }
+    
+    //Check if AQ objects are not changed from initial state
+    for ( var i = 0; i < bd.board.length; i++ ) {
+        for ( var j = 0; j < bd.board[i].length; j++ ) {
+            if ( !bd.board[i][j].isComplete() ) {
+                return false;
+            }
+        }
+    }
+    
+    //Check if final question has been created
+    if ( this.finalQ !== undefined ) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 //Player Object
 var Player = function(name, avatar) {

@@ -7,7 +7,7 @@ body {
     height: 100%;
     z-index: 1;
     position: absolute;
-    /*background-color: #0000CC;*/
+    background-color: #0000CC;
 
     display: -webkit-flex;
 	display:  -webkit-box;
