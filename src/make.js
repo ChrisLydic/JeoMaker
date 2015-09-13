@@ -1,7 +1,6 @@
 var makeState = {
     
     create: function () {
-        
         switch(currBoard.curr) {
             case "1":
                 this.currBoard = currBoard.b1;
@@ -10,7 +9,7 @@ var makeState = {
                 this.currBoard = currBoard.b2;
                 break;
             default:
-                //final question
+                //final question?
                 break;
         }
         this.build();
@@ -22,47 +21,6 @@ var makeState = {
         for ( i = 0; i < this.buttons.length; i++ ){
             this.buttons[i].isOver();
         }
-    },
-    
-    getInput: function (id) {// id is aq or topic
-        var form = document.getElementById(id);
-        
-        if (id === 'aq') {
-            a = form.elements['answer'].value;
-            q = form.elements['question'].value;
-            this.updateAQ( a, q );
-        } else if (id === 'topic') {
-            topic = form.elements['topicText'].value;
-            this.updateTopic( topic );
-        }
-        
-        //container of the forms has Form appended to its name
-        document.getElementById( id + 'Form' ).style.display = 'none';
-        
-        this.build();
-    },
-    
-    promptRunner: function (id, ref) {///////////////////////////////////////////////////////////////////consider using a phaser button to handle submit
-        window.ref = ref;
-        var bd = makeState.currBoard;
-        var form = document.getElementById(id);
-        //currently using AN for testing
-        if (id === 'aq') {
-            form.elements["answer"].value = bd.board[ window.ref[0] ][ window.ref[1] ].a;
-            form.elements["question"].value = bd.board[ window.ref[0] ][ window.ref[1] ].q;
-        } else if (id === 'topic') {
-            form.elements["topicText"].value = bd.topics[ window.ref[0] ] ;
-        }
-        
-        document.getElementById( id + 'Form' ).style.display = 'flex';
-    },
-    
-    updateTopic: function (topic) {
-        this.currBoard.topics[ window.ref[0] ] = topic;
-    },
-    
-    updateAQ: function ( a, q ) {
-        this.currBoard.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
     },
     
     build: function () {
@@ -176,5 +134,62 @@ var makeState = {
         var label2 = game.add.text( w-( padBar + 100 )+(btnBarWidthSmall/2), posYBar + (btnBarHeight/2), 'Quit', barStyles );
         label2.anchor.setTo(0.5,0.5);
         layers.textLayer.add(label2);
+    },
+    
+    getInput: function (id) {// id is aq or topic
+        var form = document.getElementById(id);
+        
+        if (id === 'aq') {
+            a = form.elements['answer'].value;
+            q = form.elements['question'].value;
+            this.updateAQ( a, q );
+        } else if (id === 'topic') {
+            topic = form.elements['topicText'].value;
+            this.updateTopic( topic );
+        }
+        
+        //container of the forms has Form appended to its name
+        document.getElementById( id + 'Form' ).style.display = 'none';
+        
+        this.build();
+    },
+    
+    promptRunner: function (id, ref) {///////////////////////////////////consider using a phaser button to handle submit
+        window.ref = ref;
+        var bd = makeState.currBoard;
+        var form = document.getElementById(id);
+        //currently using AN for testing
+        if (id === 'aq') {
+            form.elements["answer"].value = bd.board[ window.ref[0] ][ window.ref[1] ].a;
+            form.elements["question"].value = bd.board[ window.ref[0] ][ window.ref[1] ].q;
+        } else if (id === 'topic') {
+            form.elements["topicText"].value = bd.topics[ window.ref[0] ] ;
+        }
+        
+        document.getElementById( id + 'Form' ).style.display = 'flex';
+    },
+    
+    updateTopic: function (topic) {
+        this.currBoard.topics[ window.ref[0] ] = topic;
+    },
+    
+    updateAQ: function ( a, q ) {
+        this.currBoard.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
+    },
+    
+    popUp: function ( type ) {//types: menu, save, saveErr
+        switch(currBoard.curr) {
+            case "menu":
+                
+                break;
+            case "save":
+                
+                break;
+            case "saveErr":
+                
+                break;
+            default:
+                break;
+        }
     }
 };
