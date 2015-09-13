@@ -8,6 +8,7 @@ body {
     z-index: 1;
     position: absolute;
     background-color: #0000CC;
+    text-align: center;
 
     display: -webkit-flex;
 	display:  -webkit-box;
@@ -28,6 +29,22 @@ body {
 input,
 textarea {
     clear: left;
-    float:left;
+    float: left;
     margin: 5px;
+    padding: 5px;
+    border: none;
+    color: #0000CC;
+}
+
+textarea {
+    resize: none;
+}
+
+input[type="button"] {
+    padding: 10px;
+    background-color: #0099FF;
+}
+
+input[type="button"]:hover {
+    background-color: #44AAFF;
 }
