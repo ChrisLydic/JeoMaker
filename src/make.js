@@ -138,42 +138,66 @@ var makeState = {
         var barStyles = {font: '30px Arial', fill: '#FFFFFF' };
         
         if ( currBoard.isDouble ) {
-            this.buttons.push( new RectButton( (w/2)-(btnBarWidth*1.5 + padBar), posYBar, btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
-            this.buttons.push( new RectButton( (w/2)-(btnBarWidth/2), posYBar, btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
-            this.buttons.push( new RectButton( (w/2)+(btnBarWidth/2 + padBar), posYBar, btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            this.buttons.push( new RectButton( (w/2)-(btnBarWidth*1.5 + padBar), posYBar,
+                    btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
             
-            var label1 = game.add.text( (w/2)-(btnBarWidth*1.5 + padBar)+(btnBarWidth/2), posYBar + (btnBarHeight/2), 'Normal', barStyles );
+            this.buttons.push( new RectButton( (w/2)-(btnBarWidth/2), posYBar, btnBarWidth,
+                    btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            
+            this.buttons.push( new RectButton( (w/2)+(btnBarWidth/2 + padBar), posYBar,
+                    btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            
+            var label1 = game.add.text( (w/2)-(btnBarWidth*1.5 + padBar)+(btnBarWidth/2),
+                    posYBar + (btnBarHeight/2), 'Normal', barStyles );
+            
             label1.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label1);
             
-            var label2 = game.add.text( (w/2)-(btnBarWidth/2)+(btnBarWidth/2), posYBar + (btnBarHeight/2), 'Double', barStyles );
+            var label2 = game.add.text( (w/2)-(btnBarWidth/2)+(btnBarWidth/2),
+                    posYBar + (btnBarHeight/2), 'Double', barStyles );
+            
             label2.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label2);
             
-            var label3 = game.add.text( (w/2)+(btnBarWidth/2 + padBar)+(btnBarWidth/2), posYBar + (btnBarHeight/2), 'Final Q', barStyles );
+            var label3 = game.add.text( (w/2)+(btnBarWidth/2 + padBar)+(btnBarWidth/2),
+                    posYBar + (btnBarHeight/2), 'Final Q', barStyles );
+            
             label3.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label3);
         } else {
-            this.buttons.push( new RectButton( (w/2)-(btnBarWidth + padBar/2), posYBar, btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
-            this.buttons.push( new RectButton( (w/2)+(padBar/2), posYBar, btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            this.buttons.push( new RectButton( (w/2)-(btnBarWidth + padBar/2), posYBar,
+                    btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
             
-            var label1 = game.add.text( (w/2)-(btnBarWidth + padBar/2)+(btnBarWidth/2), posYBar + (btnBarHeight/2), 'Normal', barStyles );
+            this.buttons.push( new RectButton( (w/2)+(padBar/2), posYBar, btnBarWidth,
+                    btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            
+            var label1 = game.add.text( (w/2)-(btnBarWidth + padBar/2)+(btnBarWidth/2),
+                    posYBar + (btnBarHeight/2), 'Normal', barStyles );
+            
             label1.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label1);
             
-            var label2 = game.add.text( (w/2)+(padBar/2)+(btnBarWidth/2), posYBar + (btnBarHeight/2), 'Final Q', barStyles );
+            var label2 = game.add.text( (w/2)+(padBar/2)+(btnBarWidth/2), posYBar +
+                    (btnBarHeight/2), 'Final Q', barStyles );
+            
             label2.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label2);
         }
         
-        this.buttons.push( new RectButton( padBar, posYBar, btnBarWidthSmall, btnBarHeight, BLUE, partial() ) );
-        this.buttons.push( new RectButton( w-( padBar + 100 ), posYBar, btnBarWidthSmall, btnBarHeight, BLUE, partial() ) );
+        this.buttons.push( new RectButton( padBar, posYBar, btnBarWidthSmall,
+                btnBarHeight, BLUE, partial() ) );
+        this.buttons.push( new RectButton( w-( padBar + 100 ), posYBar,
+                btnBarWidthSmall, btnBarHeight, BLUE, partial() ) );
         
-        var label1 = game.add.text( padBar+(btnBarWidthSmall/2), posYBar + (btnBarHeight/2), 'Menu', barStyles );
+        var label1 = game.add.text( padBar+(btnBarWidthSmall/2), posYBar +
+                (btnBarHeight/2), 'Menu', barStyles );
+        
         label1.anchor.setTo(0.5,0.5);
         layers.textLayer.add(label1);
         
-        var label2 = game.add.text( w-( padBar + 100 )+(btnBarWidthSmall/2), posYBar + (btnBarHeight/2), 'Quit', barStyles );
+        var label2 = game.add.text( w-( padBar + 100 )+(btnBarWidthSmall/2),
+                posYBar + (btnBarHeight/2), 'Quit', barStyles );
+        
         label2.anchor.setTo(0.5,0.5);
         layers.textLayer.add(label2);
     }
