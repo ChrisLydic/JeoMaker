@@ -58,7 +58,7 @@ var makeState = {
                         heightTopics = heightBox * 0.2;
                     }
                     
-                    styles = {font: heightTopics + 'px Arial', fill: '#FFFFFF', align: 'center', wordWrap: true, wordWrapWidth: widthBox};
+                    styles = {font: heightTopics + 'px Arial', fill: LABEL_WHITE, align: 'center', wordWrap: true, wordWrapWidth: widthBox};
                 } else {
                     if ( this.currBoard.board[row - 1][col].isComplete() ) {
                         btnColor = PURPLE;
@@ -71,10 +71,10 @@ var makeState = {
                     id = aqForm;
                     
                     labelText = this.currBoard.money[row - 1];
-                    styles = {font: (heightBox * 0.6) + 'px Arial', fill: '#FFFF99'};
+                    styles = {font: (heightBox * 0.6) + 'px Arial', fill: LABEL_BLUE};
                 }
                 
-                var label = game.add.text(posX + widthBox/2, posY + heightBox/2, labelText, styles);
+                var label = game.add.text( posX + widthBox/2, posY + heightBox/2, labelText, styles );
                 label.anchor.setTo(0.5,0.5);
                 layers.textLayer.add(label);
                 
@@ -93,7 +93,7 @@ var makeState = {
         var btnBarHeight = 50;
         var btnBarWidth = 200;
         var btnBarWidthSmall = 100;
-        var barStyles = {font: '30px Arial', fill: '#FFFFFF' };
+        var barStyles = {font: '30px Arial', fill: LABEL_WHITE };
         
         if ( currBoard.isDouble ) {
             this.buttons.push( new RectButton( (w/2)-(btnBarWidth*1.5 + padBar), posYBar,

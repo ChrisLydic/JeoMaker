@@ -35,6 +35,9 @@ var LIGHT_BLUE = 0x0099FF;
 var BLUE = 0x0055FF;
 var DARK_BLUE = 0x0000CC;
 var PURPLE = 0x4433CC;
+var LABEL_WHITE = "#FFFFFF";
+var LABEL_YELLOW = "#FFCC33";
+var LABEL_BLUE = "#CCFFFF";
 
 //Get Dimensions
 var PADDING = 20;
