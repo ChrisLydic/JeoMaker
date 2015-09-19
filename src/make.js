@@ -27,7 +27,8 @@ var makeState = {
         layers = {
             bgLayer: this.add.group(),
             btnLayer: this.add.group(),
-            textLayer: this.add.group()
+            textLayer: this.add.group(),
+            popUpLayer: this.add.group()
         };
         
         this.buttons = [];
@@ -143,7 +144,7 @@ var makeState = {
         }
         
         this.buttons.push( new RectButton( padBar, posYBar, btnBarWidthSmall,
-                btnBarHeight, BLUE, partial() ) );
+                btnBarHeight, BLUE, partial( this.popUp, 'menu' ) ) );
         this.buttons.push( new RectButton( w-( padBar + 100 ), posYBar,
                 btnBarWidthSmall, btnBarHeight, BLUE, partial() ) );
         
@@ -154,7 +155,7 @@ var makeState = {
         layers.textLayer.add(label1);
         
         var label2 = game.add.text( w-( padBar + 100 )+(btnBarWidthSmall/2),
-                posYBar + (btnBarHeight/2), 'Quit', barStyles );
+                posYBar + (btnBarHeight/2), 'Save', barStyles );
         
         label2.anchor.setTo(0.5,0.5);
         layers.textLayer.add(label2);
@@ -201,15 +202,28 @@ var makeState = {
         this.currBoard.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
     },
     
-    popUp: function ( type ) {//types: menu, save, saveErr
-        switch(currBoard.curr) {
-            case "menu":
+    popUp: function ( typeP ) {//types: menu, save, saveErr
+        var windowWidth = 300;
+        var windowHeight = 200;
+        //consider html for consistency!
+        switch( typeP ) {
+            case 'menu':
+                var graphics = game.add.graphics( 0, 0 );
+                layers.popUpLayer.add( graphics );
+                
+                graphics.beginFill( BLUE );
+                graphics.drawRect( (w/2) - ((windowWidth+5)/2), (h/2) - ((windowHeight+5)/2), windowWidth + 5, windowHeight + 5 );
+                graphics.endFill();
+                
+                graphics.beginFill( DARK_BLUE );
+                graphics.drawRect( (w/2) - (windowWidth/2), (h/2) - (windowHeight/2), windowWidth, windowHeight );
+                graphics.endFill();
                 
                 break;
-            case "save":
-                
+            case 'save':
+                layers.btnLayer.destroy();
                 break;
-            case "saveErr":
+            case 'saveErr':
                 
                 break;
             default:
