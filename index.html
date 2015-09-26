@@ -10,6 +10,7 @@
 
 <body>
     
+    <!-- Input forms -->
     <div class="formCont" id="topicForm">
     <form id="topic">
         <input type="text" name="topicText" value="Enter the topic" size="25" maxlength="50">
@@ -25,14 +26,24 @@
     </form>
     </div>
     
-    
-    <!--<div class="formCont" id="menu">
-        <p>Quit</p>
+    <!-- MakeState menus -->
+    <div class="formCont" id="menu">
     <form id="aq">
-        <input type="button" name="submit" value="Submit" onclick="makeState.getInput('aq')">
-        <input type="button" name="submit" value="Submit" onclick="makeState.getInput('aq')">
+        <input type="button" name="submit" value="Main Menu" onclick="makeState.menuInput(1)">
+        <input type="button" name="submit" value="Help" onclick="makeState.menuInput(2)">
     </form>
-    </div>-->
+    </div>
+    
+    <div class="formCont" id="save">
+    <form id="aq">
+        <input type="button" name="submit" value="Save Anyways" onclick="makeState.menuInput(3)">
+        <input type="button" name="submit" value="Cancel" onclick="makeState.menuInput(4)">
+    </form>
+    </div>
+    
+    <div class="formCont" id="help">
+        <p>I am the stone that the boulder refused.</p>
+    </div>
     
     <div id='gameDiv'></div>
 </body>

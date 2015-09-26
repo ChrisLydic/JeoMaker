@@ -1,15 +1,20 @@
 var makeState = {
     
+    Opt: { MAIN: 1, HELP: 2, SAVE: 3, CANCEL: 4, C_HELP: 5},
+    
     create: function () {
-        switch(currBoard.curr) {
-            case "1":
-                this.currBoard = currBoard.b1;
+        //Get the current board
+        switch( currBoard.curr ) {
+            case 1:
+                this.currRound = currBoard.b1;
                 break;
-            case "2":
-                this.currBoard = currBoard.b2;
+            case 2:
+                this.currRound = currBoard.b2;
+                break;
+            case 3:
+                //final question
                 break;
             default:
-                //final question?
                 break;
         }
         this.build();
@@ -17,8 +22,7 @@ var makeState = {
     
     update: function () {
         //Mouse over and mouse out check for buttons
-        var i;
-        for ( i = 0; i < this.buttons.length; i++ ){
+        for ( var i = 0; i < this.buttons.length; i++ ){
             this.buttons[i].isOver();
         }
     },
@@ -49,7 +53,7 @@ var makeState = {
                     
                     id = topicForm;
                     
-                    labelText = this.currBoard.topics[col];
+                    labelText = this.currRound.topics[col];
                     
                     if (labelText.length < 13) {
                         heightTopics = heightBox * 0.3;
@@ -61,7 +65,7 @@ var makeState = {
                     
                     styles = {font: heightTopics + 'px Arial', fill: LABEL_WHITE, align: 'center', wordWrap: true, wordWrapWidth: widthBox};
                 } else {
-                    if ( this.currBoard.board[row - 1][col].isComplete() ) {
+                    if ( this.currRound.board[row - 1][col].isFull() ) {
                         btnColor = PURPLE;
                     } else {
                         btnColor = BLUE;
@@ -71,7 +75,7 @@ var makeState = {
                     
                     id = aqForm;
                     
-                    labelText = this.currBoard.money[row - 1];
+                    labelText = this.currRound.money[row - 1];
                     styles = {font: (heightBox * 0.6) + 'px Arial', fill: LABEL_BLUE};
                 }
                 
@@ -146,7 +150,7 @@ var makeState = {
         this.buttons.push( new RectButton( padBar, posYBar, btnBarWidthSmall,
                 btnBarHeight, BLUE, partial( this.popUp, 'menu' ) ) );
         this.buttons.push( new RectButton( w-( padBar + 100 ), posYBar,
-                btnBarWidthSmall, btnBarHeight, BLUE, partial() ) );
+                btnBarWidthSmall, btnBarHeight, BLUE, partial( this.popUp, 'save' ) ) );
         
         var label1 = game.add.text( padBar+(btnBarWidthSmall/2), posYBar +
                 (btnBarHeight/2), 'Menu', barStyles );
@@ -179,9 +183,9 @@ var makeState = {
         this.build();
     },
     
-    promptRunner: function (id, ref) {///////////////////////////////////consider using a phaser button to handle submit
+    promptRunner: function (id, ref) {
         window.ref = ref;
-        var bd = makeState.currBoard;
+        var bd = makeState.currRound;
         var form = document.getElementById(id);
         //currently using AN for testing
         if (id === 'aq') {
@@ -195,39 +199,56 @@ var makeState = {
     },
     
     updateTopic: function (topic) {
-        this.currBoard.topics[ window.ref[0] ] = topic;
+        this.currRound.topics[ window.ref[0] ] = topic;
     },
     
     updateAQ: function ( a, q ) {
-        this.currBoard.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
+        this.currRound.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
     },
     
-    popUp: function ( typeP ) {//types: menu, save, saveErr
-        var windowWidth = 300;
-        var windowHeight = 200;
-        //consider html for consistency!
+    popUp: function ( typeP ) {//types: menu, save
         switch( typeP ) {
             case 'menu':
-                var graphics = game.add.graphics( 0, 0 );
-                layers.popUpLayer.add( graphics );
-                
-                graphics.beginFill( BLUE );
-                graphics.drawRect( (w/2) - ((windowWidth+5)/2), (h/2) - ((windowHeight+5)/2), windowWidth + 5, windowHeight + 5 );
-                graphics.endFill();
-                
-                graphics.beginFill( DARK_BLUE );
-                graphics.drawRect( (w/2) - (windowWidth/2), (h/2) - (windowHeight/2), windowWidth, windowHeight );
-                graphics.endFill();
-                
+                document.getElementById( typeP ).style.display = 'flex';
                 break;
             case 'save':
-                layers.btnLayer.destroy();
-                break;
-            case 'saveErr':
-                
+                if ( currBoard.isFull() ) {
+                    this.save();
+                } else {
+                    document.getElementById( typeP ).style.display = 'flex';
+                }
                 break;
             default:
                 break;
         }
+    },
+    
+    menuInput: function ( cmd ) {
+        switch( cmd ) {
+            case this.Opt.MAIN:
+                document.getElementById( 'menu' ).style.display = 'none';
+                game.state.start( 'menu' );
+                break;
+            case this.Opt.HELP:
+                document.getElementById( 'menu' ).style.display = 'none';
+                document.getElementById( 'help' ).style.display = 'flex';
+                break;
+            case this.Opt.SAVE:
+                document.getElementById( 'save' ).style.display = 'none';
+                this.save();
+                break;
+            case this.Opt.CANCEL:
+                document.getElementById( 'save' ).style.display = 'none';
+                break;
+            case this.Opt.C_HELP:
+                document.getElementById( 'help' ).style.display = 'none';
+                break;
+            default:
+                break;
+        }
+    },
+    
+    save: function () {
+        localStorage.setItem( "Jeo1", currBoard );
     }
 };

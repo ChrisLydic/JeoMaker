@@ -2,11 +2,18 @@ var makeMenuState = {
     
     create: function () {
         this.build();
-        
+        //for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+        //    console.log( localStorage.getItem( localStorage.key( i ) ) );
+        //}
     },
     
     makeStart: function(isDouble) {
-        currBoard = new Jeo(isDouble);
+        if (localStorage.getItem('Jeo1') !== null){
+            console.log(localStorage.getItem('Jeo1'));
+            currBoard = localStorage.getItem('Jeo1');
+        } else {
+            currBoard = new Jeo(isDouble);
+        }
         game.state.start('make');
     },
     

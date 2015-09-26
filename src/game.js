@@ -72,7 +72,7 @@ AQ.prototype.update = function(a, q) {
     this.q = q;
 };
 //Check if AQ object has been changed from initial state
-AQ.prototype.isComplete = function() {
+AQ.prototype.isFull = function() {
     if ( this.a === 'Answer' || this.q === 'Question' ) {
         return false;
     } else {
@@ -101,7 +101,7 @@ Board.prototype.constructor = Board;
 
 //Jeo Object contains all data needed to make a JeoMaker game
 var Jeo = function(isDouble) {
-    this.curr = "1"; //1 for board 1, 2 for board 2, f for final question
+    this.curr = 1; //1 for board 1, 2 for board 2, 3 for final question
     this.isDouble = isDouble;
     this.b1 = new Board(false);
     if (this.isDouble) {
@@ -118,7 +118,7 @@ Jeo.prototype.setFinalQ = function(q, a) {
 Jeo.prototype.updateFinalQ = function(q, a) {
     this.finalQ.update(q, a);
 };
-Jeo.prototype.isComplete = function() {
+Jeo.prototype.isFull = function() {
     if ( this.isDouble ) {
         return ( this.checkBoards( this.b1 ) && this.checkBoards( this.b2 ) );
     } else {

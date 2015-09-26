@@ -2,6 +2,12 @@ body {
     margin: 0;
 }
 
+p {
+    color: #FFFFFF;
+    width: 400px;
+    font-family: Arial, sans-serif;
+}
+
 .formCont {
     width: 100%;
     height: 100%;
