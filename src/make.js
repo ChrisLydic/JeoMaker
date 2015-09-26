@@ -75,7 +75,7 @@ var makeState = {
                     
                     id = aqForm;
                     
-                    labelText = this.currRound.money[row - 1];
+                    labelText = '$' + this.currRound.money[row - 1].toString();
                     styles = {font: (heightBox * 0.6) + 'px Arial', fill: LABEL_BLUE};
                 }
                 
