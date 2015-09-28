@@ -100,15 +100,24 @@ var makeState = {
         var btnBarWidthSmall = 100;
         var barStyles = {font: '30px Arial', fill: LABEL_WHITE };
         
+        //Setup for final question button
+        id = aqForm;
+        ref = ["F"];
+        
         if ( currBoard.isDouble ) {
             this.buttons.push( new RectButton( (w/2)-(btnBarWidth*1.5 + padBar), posYBar,
-                    btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+                    btnBarWidth, btnBarHeight, BLUE, null ) );
             
             this.buttons.push( new RectButton( (w/2)-(btnBarWidth/2), posYBar, btnBarWidth,
-                    btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+                    btnBarHeight, BLUE, null ) );
             
-            this.buttons.push( new RectButton( (w/2)+(btnBarWidth/2 + padBar), posYBar,
-                    btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            if ( currBoard.finalQ.isFull() ) {
+                this.buttons.push( new RectButton( (w/2)+(btnBarWidth/2 + padBar), posYBar,
+                        btnBarWidth, btnBarHeight, PURPLE, partial( this.promptRunner, id, ref ) ) );
+            } else {
+                this.buttons.push( new RectButton( (w/2)+(btnBarWidth/2 + padBar), posYBar,
+                        btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            }
             
             var label1 = game.add.text( (w/2)-(btnBarWidth*1.5 + padBar)+(btnBarWidth/2),
                     posYBar + (btnBarHeight/2), 'Normal', barStyles );
@@ -128,23 +137,19 @@ var makeState = {
             label3.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label3);
         } else {
-            this.buttons.push( new RectButton( (w/2)-(btnBarWidth + padBar/2), posYBar,
-                    btnBarWidth, btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            if ( currBoard.finalQ.isFull() ) {
+                this.buttons.push( new RectButton( (w/2)-(btnBarWidth/2), posYBar, btnBarWidth,
+                        btnBarHeight, PURPLE, partial( this.promptRunner, id, ref ) ) );
+            } else {
+                this.buttons.push( new RectButton( (w/2)-(btnBarWidth/2), posYBar, btnBarWidth,
+                        btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
+            }
             
-            this.buttons.push( new RectButton( (w/2)+(padBar/2), posYBar, btnBarWidth,
-                    btnBarHeight, BLUE, partial( this.promptRunner, id, ref ) ) );
-            
-            var label1 = game.add.text( (w/2)-(btnBarWidth + padBar/2)+(btnBarWidth/2),
-                    posYBar + (btnBarHeight/2), 'Normal', barStyles );
+            var label1 = game.add.text( (w/2), posYBar +
+                    (btnBarHeight/2), 'Final Q', barStyles );
             
             label1.anchor.setTo(0.5,0.5);
             layers.textLayer.add(label1);
-            
-            var label2 = game.add.text( (w/2)+(padBar/2)+(btnBarWidth/2), posYBar +
-                    (btnBarHeight/2), 'Final Q', barStyles );
-            
-            label2.anchor.setTo(0.5,0.5);
-            layers.textLayer.add(label2);
         }
         
         this.buttons.push( new RectButton( padBar, posYBar, btnBarWidthSmall,
@@ -165,7 +170,7 @@ var makeState = {
         layers.textLayer.add(label2);
     },
     
-    getInput: function (id) {// id is aq or topic
+    getInput: function ( id ) {// id is aq or topic
         var form = document.getElementById(id);
         
         if (id === 'aq') {
@@ -188,9 +193,12 @@ var makeState = {
         var bd = makeState.currRound;
         var form = document.getElementById(id);
         //currently using AN for testing
-        if (id === 'aq') {
+        if (id === 'aq' && ref[0] !== "F" ) {
             form.elements["answer"].value = bd.board[ window.ref[0] ][ window.ref[1] ].a;
             form.elements["question"].value = bd.board[ window.ref[0] ][ window.ref[1] ].q;
+        } else if (id === 'aq' && ref[0] === "F" ) {
+            form.elements["answer"].value = currBoard.finalQ.a;
+            form.elements["question"].value = currBoard.finalQ.q;
         } else if (id === 'topic') {
             form.elements["topicText"].value = bd.topics[ window.ref[0] ] ;
         }
@@ -203,7 +211,11 @@ var makeState = {
     },
     
     updateAQ: function ( a, q ) {
-        this.currRound.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
+        if ( window.ref[0] === "F" ) {
+            currBoard.finalQ.update( a, q );
+        } else {
+            this.currRound.board[ window.ref[0] ][ window.ref[1] ].update( a, q );
+        }
     },
     
     popUp: function ( typeP ) {//types: menu, save
@@ -238,6 +250,8 @@ var makeState = {
                 this.save();
                 break;
             case this.Opt.CANCEL:
+                document.getElementById( 'menu' ).style.display = 'none';
+                document.getElementById( 'help' ).style.display = 'none';
                 document.getElementById( 'save' ).style.display = 'none';
                 break;
             case this.Opt.C_HELP:
@@ -249,6 +263,6 @@ var makeState = {
     },
     
     save: function () {
-        localStorage.setItem( "Jeo1", currBoard );
+        localStorage.setItem( currBoard.name, JSON.stringify( objectify( currBoard ) ) );
     }
 };

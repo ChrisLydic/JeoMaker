@@ -60,6 +60,127 @@ var partial = function ( func ) {
     };
 };
 
+//Function that makes a simple object from a Jeo class object
+//For data storage
+var objectify = function ( gameData ) {
+    var data;
+    
+    if ( gameData.isDouble ) {
+        var a1 = [];
+        var q1 = [];
+        var a2 = [];
+        var q2 = [];
+        
+        for ( var i = 0; i < 5; i++ ) {
+            for ( var j = 0; j < 6; j++ ) {
+                a1.push( gameData.b1.board[i][j].a );
+                q1.push( gameData.b1.board[i][j].q );
+            }
+        }
+        
+        for ( var i = 0; i < 5; i++ ) {
+            for ( var j = 0; j < 6; j++ ) {
+                a2.push( gameData.b2.board[i][j].a );
+                q2.push( gameData.b2.board[i][j].q );
+            }
+        }
+        
+        data = {
+            isDouble: true,
+            name: gameData.name,
+            
+            b1: {
+                topics: gameData.b1.topics,
+                a: a1,
+                q: q1
+            },
+            
+            b2: {
+                topics: gameData.b2.topics,
+                a: a2,
+                q: q2
+            },
+            
+            final: {
+                a: gameData.finalQ.a,
+                q: gameData.finalQ.q
+            }
+        };
+    } else {
+        var a1 = [];
+        var q1 = [];
+        
+        for ( var i = 0; i < 5; i++ ) {
+            for ( var j = 0; j < 6; j++ ) {
+                a1.push( gameData.b1.board[i][j].a );
+                q1.push( gameData.b1.board[i][j].q );
+            }
+        }
+        
+        data = {
+            isDouble: false,
+            name: gameData.name,
+            
+            b1: {
+                topics: gameData.b1.topics,
+                a: a1,
+                q: q1
+            },
+            
+            final: {
+                a: gameData.finalQ.a,
+                q: gameData.finalQ.q
+            }
+        };
+    }
+    
+    return data;
+};
+
+//Function to make a Jeo class object from an objectified object
+//For data storage
+var unobjectify = function ( gameData ) {
+    var data = new Jeo( gameData.name, gameData.isDouble );
+    
+    if ( gameData.isDouble ) {
+        data.b1.topics = gameData.b1.topics;
+        data.b2.topics = gameData.b2.topics;
+        
+        data.finalQ.update( gameData.final.a, gameData.final.q );
+        
+        var count = 0;
+        for ( var i = 0; i < 5; i++ ) {
+            for ( var j = 0; j < 6; j++ ) {
+                data.b1.board[i][j].update( gameData.b1.a[count], gameData.b1.q[count] );
+                count++;
+            }
+        }
+        
+        count = 0;
+        for ( var i = 0; i < 5; i++ ) {
+            for ( var j = 0; j < 6; j++ ) {
+                data.b1.board[i][j].update( gameData.b2.a[count], gameData.b2.q[count] );
+                count++;
+            }
+        }
+        
+    } else {
+        data.b1.topics = gameData.b1.topics;
+
+        data.finalQ.update( gameData.final.a, gameData.final.q );
+        
+        var count = 0;
+        for ( var i = 0; i < 5; i++ ) {
+            for ( var j = 0; j < 6; j++ ) {
+                data.b1.board[i][j].update( gameData.b1.a[count], gameData.b1.q[count] );
+                count++;
+            }
+        }
+    }
+    
+    return data;
+};
+
 
 //Answer/Question Class
 //Holds the answer and question for a particular tile on the Jeo board
@@ -136,7 +257,8 @@ Board.prototype.isFull = function () {
 //Jeo Class
 //Contains all data needed to make a JeoMaker game
 //Has two board objects if it is a double Jeopardy game, one otherwise
-var Jeo = function ( isDouble ) {
+var Jeo = function ( name, isDouble ) {
+    this.name = name;
     this.curr = 1; //1 for board 1, 2 for board 2, 3 for final question
     this.isDouble = isDouble;
     this.finalQ = new AQ();
