@@ -6,6 +6,7 @@ p {
     color: #FFFFFF;
     width: 400px;
     font-family: Arial, sans-serif;
+    float: left;
 }
 
 .formCont {
@@ -32,6 +33,7 @@ p {
     display: none;
 }
 
+select,
 input,
 textarea {
     clear: left;

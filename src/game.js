@@ -14,9 +14,9 @@ var game = new Phaser.Game( w, h, Phaser.AUTO, 'gameDiv' );
     h = window.innerHeight;
     calcBoxDim()
     
-    if (game.renderType === Phaser.WEBGL) {
-        game.renderer.resize(w, h);
-    } else if (game.renderType === Phaser.CANVAS) {
+    if ( game.renderType === Phaser.WEBGL ) {
+        game.renderer.resize( w, h );
+    } else if ( game.renderType === Phaser.CANVAS ) {
         //code doesn't work
         game.width = w;
         game.height = h;
@@ -29,7 +29,7 @@ var game = new Phaser.Game( w, h, Phaser.AUTO, 'gameDiv' );
 //Initialized in the makeMenu or playMenu states
 var currBoard;
 
-//Colors
+//Colors for buttons and text
 var LIGHT_BLUE = 0x0099FF;
 var BLUE = 0x0055FF;
 var DARK_BLUE = 0x0000CC;
@@ -53,8 +53,8 @@ calcBoxDim();
 //Function that allows passing a function as an argument with arguments inside
 //ex: partial( function, arg1 )
 var partial = function ( func ) {
-    var args = Array.prototype.slice.call( arguments, 1 );
-    return function() {
+    var args = Array.prototype.slice.call( arguments, 1 ); 
+    return function () {
         var allArguments = args.concat( Array.prototype.slice.call( arguments ) );
         return func.apply( this, allArguments );
     };
@@ -183,7 +183,7 @@ var unobjectify = function ( gameData ) {
 
 
 //Answer/Question Class
-//Holds the answer and question for a particular tile on the Jeo board
+//Holds the answer and question for a specific tile on the Jeo board
 var AQ = function () {
     this.a = 'Answer';
     this.q = 'Question';
@@ -215,7 +215,7 @@ var Board = function ( isDouble ) {
     //The topics for this round
     this.topics = ['Topic', 'Topic', 'Topic', 'Topic', 'Topic', 'Topic'];
     
-    //The board contains the tiles for this round
+    //2d array contains the tiles for this round
     this.board = [];
     
     for ( var i = 0; i < 5; i++ ) {
@@ -259,7 +259,7 @@ Board.prototype.isFull = function () {
 //Has two board objects if it is a double Jeopardy game, one otherwise
 var Jeo = function ( name, isDouble ) {
     this.name = name;
-    this.curr = 1; //1 for board 1, 2 for board 2, 3 for final question
+    this.curr = 1; //1 for board 1, 2 for board 2
     this.isDouble = isDouble;
     this.finalQ = new AQ();
     this.b1 = new Board( false );
@@ -270,13 +270,13 @@ var Jeo = function ( name, isDouble ) {
 
 Jeo.prototype.constructor = Jeo;
 
-Jeo.prototype.updateFinalQ = function( q, a ) {
+Jeo.prototype.updateFinalQ = function ( q, a ) {
     this.finalQ.update( q, a );
 };
 
 //If all values in the board objects and AQ objects 
 //are changed from initial state, returns true
-Jeo.prototype.isFull = function() {
+Jeo.prototype.isFull = function () {
     if ( this.isDouble ) {
         return ( this.finalQ.isFull() && this.b1.isFull() && this.b2.isFull() );
     } else {
@@ -287,7 +287,7 @@ Jeo.prototype.isFull = function() {
 
 //Player Class
 //Stores player data
-var Player = function( name, avatar ) {
+var Player = function ( name, avatar ) {
     this.name = name;
     this.avatar = avatar;
     this.score = 0;
@@ -295,11 +295,11 @@ var Player = function( name, avatar ) {
 
 Player.prototype.constructor = Player;
 
-Player.prototype.setScore = function( amt ){
+Player.prototype.setScore = function ( amt ) {
     score += amt;
 };
 
-Player.prototype.edit = function( name, avatar ){
+Player.prototype.edit = function ( name, avatar ) {
     this.name = name;
     this.avatar = avatar;
 };
@@ -315,8 +315,8 @@ var RectButton = function ( x, y, width, height, color, onDown ) {
     this.height = height;
     this.color = color;
     this.onDown = onDown; //the function ran when the button is clicked
-    this.btn = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
-    var btnDown = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
+    this.btn = new Phaser.Rectangle( this.x, this.y, this.width, this.height );
+    var btnDown = new Phaser.Rectangle( this.x, this.y, this.width, this.height );
     
     this.graphics = game.add.graphics( 0, 0 );
     
@@ -327,7 +327,7 @@ var RectButton = function ( x, y, width, height, color, onDown ) {
     
     this.draw( this.color, 1 );
     
-    var handlePointerDown = function( pointer ){
+    var handlePointerDown = function ( pointer ) {
         if ( btnDown.contains( pointer.x, pointer.y ) ) {
             onDown();
         }
@@ -340,56 +340,63 @@ RectButton.prototype.constructor = RectButton;
 
 //Check if the mouse is hovering
 RectButton.prototype.isOver = function () {
-        if ( this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && !this.isIn ) {
-            this.draw( 0xFFFFFF, 0.1 );
-            this.isIn = true;
-        } else if ( !this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && this.isIn ) {
-            this.draw( this.color, 1 );
-            this.isIn = false;
-        }
+    if ( this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && !this.isIn ) {
+        this.draw( 0xFFFFFF, 0.1 );
+        this.isIn = true;
+    } else if ( !this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && this.isIn ) {
+        this.draw( this.color, 1 );
+        this.isIn = false;
+    }
 };
 
 //A rectangle drawing function, using Phaser.Graphics
-RectButton.prototype.draw = function (color, opacity) {
-    this.graphics.beginFill(color, opacity);
-    this.graphics.drawRect(this.x, this.y, this.width, this.height);
+RectButton.prototype.draw = function ( color, opacity ) {
+    this.graphics.beginFill( color, opacity );
+    this.graphics.drawRect( this.x, this.y, this.width, this.height );
     this.graphics.endFill();
 };
 
 
 //LabelButton Class
 //Creates a button from text
-var LabelButton = function( label, font, textColor, align, wordWrap, game, x, y, key, callback, callbackContext ) {
-    Phaser.Button.call(this, game, x, y, key, callback, callbackContext);
+var LabelButton = function ( label, font, textColor, align, wordWrap, game, x, y, key, callback, callbackContext ) {
+    Phaser.Button.call( this, game, x, y, key, callback, callbackContext );
 
     //Create and style label
     this.anchor.setTo( 0.5, 0.5 );
-    this.label = new Phaser.Text(game, 0, 0, label, { 'font': font, 'fill': textColor, 'align': align, 'wordWrap': wordWrap, 'wordWrapWidth': widthBox });
+    this.label = new Phaser.Text( game, 0, 0, label, {
+        'font': font,
+        'fill': textColor,
+        'align': align,
+        'wordWrap': wordWrap,
+        'wordWrapWidth': widthBox
+    } );
  
     //puts the label in the center of the button
     this.label.anchor.setTo( 0.5, 0.5 );
  
-    this.addChild(this.label);
+    this.addChild( this.label );
     this.setLabel( label );
  
     //adds button to game
     game.add.existing( this );
 };
  
-LabelButton.prototype = Object.create(Phaser.Button.prototype);
+LabelButton.prototype = Object.create( Phaser.Button.prototype );
 LabelButton.prototype.constructor = LabelButton;
 
-LabelButton.prototype.setLabel = function( label ) {
-   this.label.setText(label);
+LabelButton.prototype.setLabel = function ( label ) {
+   this.label.setText( label );
 };
 
-//Add all states and start bootState
-game.state.add('boot', bootState);
-game.state.add('load', loadState);
-game.state.add('menu', menuState);
-game.state.add('makeMenu', makeMenuState);
-game.state.add('playMenu', playMenuState);
-game.state.add('make', makeState);
-game.state.add('play', playState);
 
-game.state.start('boot');
+//Add all states and start bootState
+game.state.add( 'boot', bootState );
+game.state.add( 'load', loadState );
+game.state.add( 'menu', menuState );
+game.state.add( 'makeMenu', makeMenuState );
+game.state.add( 'playMenu', playMenuState );
+game.state.add( 'make', makeState );
+game.state.add( 'play', playState );
+
+game.state.start( 'boot' );

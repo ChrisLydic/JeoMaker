@@ -2,11 +2,10 @@ var playMenuState = {
     
     create: function () {
         this.build();
-        
     },
     
     play: function () {
-        game.state.start('play');
+        game.state.start( 'play' );
     },
     
     build: function () {
