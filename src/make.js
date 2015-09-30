@@ -3,7 +3,6 @@ var makeState = {
     Opt: { MAIN: 1, HELP: 2, SAVE: 3, CANCEL: 4 },
     
     create: function () {
-        game.world.removeAll();
         //Get the current board
         switch( currBoard.curr ) {
             case 1:
@@ -122,20 +121,9 @@ var makeState = {
         
         //Draw menubar buttons
         if ( currBoard.isDouble ) {
-            var func1 = 'do nothing';
-            var func2 = 'do nothing';
-            if ( currBoard.curr === 1 ) {
-                func2 = partial( this.switchBoard, 2 );
-            } else {
-                func1 = partial( this.switchBoard, 1 );
-            }
-            
-            //Board 1 button
+            //Switch board button
             this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar ),
-                    posYBar, btnBarWidth, btnBarHeight, BLUE, func1 ) );
-            //Board 2 button
-            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth / 2 ),
-                    posYBar, btnBarWidth, btnBarHeight, BLUE, func2 ) );
+                    posYBar, btnBarWidth, btnBarHeight, BLUE, this.switchBoard ) );
             
             //Final question button, color is changed if it has been edited
             var fqColor;
@@ -147,19 +135,12 @@ var makeState = {
             this.buttons.push( new RectButton( ( w / 2 ) + ( btnBarWidth / 2 + padBar ), posYBar,
                     btnBarWidth, btnBarHeight, fqColor, partial( this.promptRunner, id, ref ) ) );
             
-            //Board 1 label
+            //Switch board label
             var label1 = game.add.text( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar) +
-                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Normal', barStyles );
+                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Double', barStyles );
             
             label1.anchor.setTo( 0.5, 0.5 );
             layers.textLayer.add( label1 );
-            
-            //Board 2 label
-            var label2 = game.add.text( ( w / 2 ) - ( btnBarWidth / 2 ) + ( btnBarWidth / 2 ),
-                    posYBar + ( btnBarHeight / 2 ), 'Double', barStyles );
-            
-            label2.anchor.setTo( 0.5, 0.5 );
-            layers.textLayer.add( label2 );
             
             //Final Question Label
             var label3 = game.add.text( ( w / 2 ) + ( btnBarWidth / 2 + padBar ) +
@@ -302,13 +283,17 @@ var makeState = {
         localStorage.setItem( currBoard.name, JSON.stringify( objectify( currBoard ) ) );
     },
     
-    switchBoard: function ( num ) {
-        if ( num === 1 ) {
-            currBoard.curr = 1;
-            makeState.create();
-        } else {
+    switchBoard: function () {
+        console.log(currBoard.curr);
+        //this.buttons = null;
+        //layers.btnLayer.destroy();
+        game.world.removeAll();
+        if ( currBoard.curr === 1 ) {
             currBoard.curr = 2;
-            makeState.create();
+            game.state.start( 'make' );
+        } else {
+            currBoard.curr = 1;
+            game.state.start( 'make' );
         }
     }
 };
