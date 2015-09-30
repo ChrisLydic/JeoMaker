@@ -137,7 +137,7 @@ var makeState = {
             
             //Switch board label
             var label1 = game.add.text( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar) +
-                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Double', barStyles );
+                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Switch Board', barStyles );
             
             label1.anchor.setTo( 0.5, 0.5 );
             layers.textLayer.add( label1 );
@@ -285,8 +285,6 @@ var makeState = {
     
     switchBoard: function () {
         console.log(currBoard.curr);
-        //this.buttons = null;
-        //layers.btnLayer.destroy();
         game.world.removeAll();
         if ( currBoard.curr === 1 ) {
             currBoard.curr = 2;

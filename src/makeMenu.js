@@ -37,13 +37,14 @@ var makeMenuState = {
                 false, game, game.world.centerX, game.world.centerY - 50, 'button',
                 partial( this.makeBoard, false ), this );
         
-        var label1 = game.add.text( game.world.centerX, game.world.centerY, desc1, textValues );
+        //description labels need to be positioned correctly
+        //var label1 = game.add.text( game.world.centerX, game.world.centerY, desc1, textValues );
         
         var buttonDouble = new LabelButton( 'Double', font1, LABEL_WHITE, 'center',
                 false, game, game.world.centerX, game.world.centerY - 10, 'button',
                 partial( this.makeBoard, true ), this );
         
-        var label2 = game.add.text( game.world.centerX, game.world.centerY, desc2, textValues );
+        //var label2 = game.add.text( game.world.centerX, game.world.centerY, desc2, textValues );
     },
     
     nameMenu: function () {

@@ -34,8 +34,8 @@ var menuState = {
                 false, game, game.world.centerX, game.world.centerY + 40,
                 'button', this.play, this );
         
-        var buttonStart3 = new LabelButton( 'Help', font, LABEL_WHITE, 'center',
-                false, game, game.world.centerX, game.world.centerY + 90,
-                'button', this.credits, this );
+        //var buttonStart3 = new LabelButton( 'Help', font, LABEL_WHITE, 'center',
+        //        false, game, game.world.centerX, game.world.centerY + 90,
+        //        'button', this.credits, this );
     }
 };
