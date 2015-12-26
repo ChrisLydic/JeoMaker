@@ -50,7 +50,7 @@ var MENU_BAR_HEIGHT = 70;
 var heightBox, widthBox;
 var calcBoxDim = function () {
     heightBox = ( h - ( MENU_BAR_HEIGHT + ( PADDING * 7 ) ) ) / 6;
-    widthBox = ( w - (PADDING * 7 ) ) / 6;
+    widthBox = ( w - ( PADDING * 7 ) ) / 6;
 };
 calcBoxDim();
 

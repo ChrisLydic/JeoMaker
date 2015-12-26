@@ -3,13 +3,13 @@ var playMenuState = {
     storage: [],
     
     colorEnum: {
-        RED: [0, 0x],
-        GREEN: [1, 0x],
-        BLUE: [2, 0x],
-        PURPLE: [3, 0x],
-        YELLOW: [4, 0x],
-        ORANGE: [5, 0x],
-        PINK: [6, 0x]
+        RED: [0, 0x000000],
+        GREEN: [1, 0x000000],
+        BLUE: [2, 0x000000],
+        PURPLE: [3, 0x000000],
+        YELLOW: [4, 0x000000],
+        ORANGE: [5, 0x000000],
+        PINK: [6, 0x000000]
     },
     
     create: function () {
@@ -29,19 +29,21 @@ var playMenuState = {
     
     noSaves: function () {
         //show a warning: no saved games available
+        
+        //var desc = "No saved games available.";
+        
+        //var textValues = {
+        //    font: '12px Arial',
+        //    fill: LABEL_WHITE,
+        //    wordWrap: true,
+        //    wordWrapWidth: w/2
+        //};
+        
+        //var label1 = game.add.text( game.world.centerX, game.world.centerY, desc, textValues );
     },
     
     makePlayers: function () {
-        var desc = "Play state is not finished.";
-        
-        var textValues = {
-            font: '12px Arial',
-            fill: LABEL_WHITE,
-            wordWrap: true,
-            wordWrapWidth: w/2
-        };
-        
-        var label1 = game.add.text( game.world.centerX, game.world.centerY, desc, textValues );
+        this.playerMenu();
     },
     
     nameMenu: function () {
