@@ -65,6 +65,31 @@
     </form>
     </div>
     
+    <!-- Drop down menu for Play State -->
+    <div class="formCont" id="playForm">
+    <form>
+        <select id="games"></select>
+        <input type="button" name="submit" value="Select" onclick="makePlayState.loadJeo()">
+    </form>
+    </div>
+    
+    <!-- Player Creation Menu -->
+    <div class="formCont" id="playerForm">
+    <form id="player">
+        <input type="text" name="playerName" value="Enter the game's name" size="25" maxlength="50">
+        <select id="colors">
+            <option value="Red">Red</option>
+            <option value="Green">Green</option>
+            <option value="Blue">Blue</option>
+            <option value="Purple">Purple</option>
+            <option value="Yellow">Yellow</option>
+            <option value="Orange">Orange</option>
+            <option value="Pink">Pink</option>
+        </select>
+        <input type="button" name="submit" value="Submit" onclick="makeMenuState.inputName()">
+    </form>
+    </div>
+    
     
     <div id='gameDiv'></div>
 </body>

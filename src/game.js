@@ -29,6 +29,10 @@ var game = new Phaser.Game( w, h, Phaser.AUTO, 'gameDiv' );
 //Initialized in the makeMenu or playMenu states
 var currBoard;
 
+//The player objects that are currently loaded
+//Data is added/removed in playMenu state only
+var currPlayers = [];
+
 //Colors for buttons and text
 var LIGHT_BLUE = 0x0099FF;
 var BLUE = 0x0055FF;
