@@ -2,6 +2,13 @@ body {
     margin: 0;
 }
 
+h1 {
+    color: #FFFFFF;
+    font-family: Arial, sans-serif;
+    font-size: 2em;
+    margin: 0 0 5px 0;
+}
+
 p {
     color: #FFFFFF;
     width: 400px;
@@ -36,12 +43,15 @@ p {
 select,
 input,
 textarea {
-    clear: left;
     float: left;
     margin: 5px;
     padding: 5px;
     border: none;
     color: #0000CC;
+}
+
+.break {
+    clear: left;
 }
 
 textarea {

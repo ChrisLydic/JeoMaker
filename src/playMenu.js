@@ -2,17 +2,8 @@ var playMenuState = {
     
     storage: [],
     
-    colorEnum: {
-        RED: [0, 0x000000],
-        GREEN: [1, 0x000000],
-        BLUE: [2, 0x000000],
-        PURPLE: [3, 0x000000],
-        YELLOW: [4, 0x000000],
-        ORANGE: [5, 0x000000],
-        PINK: [6, 0x000000]
-    },
-    
     create: function () {
+        this.playerMenu();
         if ( localStorage.length > 0 ) {
             for ( var i = 0, len = localStorage.length; i < len; i++ ) {
                 this.storage.push( localStorage.key( i ) );
@@ -69,16 +60,24 @@ var playMenuState = {
     },
     
     makePlayer: function () {
-        var colors = document.getElementById( 'colors' );
-        var color = colors.options[colors.selectedIndex].text;
-        
         var form = document.getElementById( 'player' );
         var name = form.elements['playerName'].value;
-        
-        document.getElementById( 'playerForm' ).style.display = 'none';
-        
+        var color = form.elements['colors'].value;
+                
         var player = new Player( name, color );
         
         currPlayers.push( player );
+        
+        this.updatePlayers();
+    },
+    
+    updatePlayers: function () {
+        var select = document.getElementById( 'players' );
+        
+        select.innerHTML = '';
+        
+        for ( var i = 0; i < currPlayers.length; i++ ) {
+            select.innerHTML = select.innerHTML + '<option>' + currPlayers[i].name + '</option>';
+        }
     }
 };

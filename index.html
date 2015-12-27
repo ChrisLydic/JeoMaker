@@ -14,15 +14,15 @@
     <div class="formCont" id="topicForm">
     <form id="topic">
         <input type="text" name="topicText" value="Enter the topic" size="25" maxlength="50">
-        <input type="button" name="submit" value="Submit" onclick="makeState.getInput('topic')">
+        <input class="break" type="button" name="submit" value="Submit" onclick="makeState.getInput('topic')">
     </form>
     </div>
     
     <div class="formCont" id="aqForm">
     <form id="aq">
         <textarea name="answer" rows="5" cols="30">Type answer here</textarea>
-        <textarea name="question" rows="5" cols="30">Type question here</textarea>
-        <input type="button" name="submit" value="Submit" onclick="makeState.getInput('aq')">
+        <textarea class="break" name="question" rows="5" cols="30">Type question here</textarea>
+        <input class="break" type="button" name="submit" value="Submit" onclick="makeState.getInput('aq')">
     </form>
     </div>
     
@@ -30,22 +30,22 @@
     <div class="formCont" id="menu">
     <form>
         <input type="button" name="submit" value="Main Menu" onclick="makeState.menuInput(1)">
-        <input type="button" name="submit" value="Help" onclick="makeState.menuInput(2)">
-        <input type="button" name="submit" value="Back" onclick="makeState.menuInput(4)">
+        <input class="break" type="button" name="submit" value="Help" onclick="makeState.menuInput(2)">
+        <input class="break" type="button" name="submit" value="Back" onclick="makeState.menuInput(4)">
     </form>
     </div>
     
     <div class="formCont" id="save">
     <form>
         <input type="button" name="submit" value="Save Anyways" onclick="makeState.menuInput(3)">
-        <input type="button" name="submit" value="Cancel" onclick="makeState.menuInput(4)">
+        <input class="break" type="button" name="submit" value="Cancel" onclick="makeState.menuInput(4)">
     </form>
     </div>
     
     <div class="formCont" id="help">
     <form>
         <p>Placeholder text.</p>
-        <input type="button" name="submit" value="Exit" onclick="makeState.menuInput(4)">
+        <input class="break" type="button" name="submit" value="Exit" onclick="makeState.menuInput(4)">
     </form>
     </div>
     
@@ -53,7 +53,7 @@
     <div class="formCont" id="ddown">
     <form>
         <select id="down"></select>
-        <input type="button" name="submit" value="Select" onclick="makeMenuState.loadJeo()">
+        <input class="break" type="button" name="submit" value="Select" onclick="makeMenuState.loadJeo()">
     </form>
     </div>
     
@@ -61,7 +61,7 @@
     <div class="formCont" id="nameForm">
     <form id="name">
         <input type="text" name="nameText" value="Enter the game's name" size="25" maxlength="50">
-        <input type="button" name="submit" value="Submit" onclick="makeMenuState.inputName()">
+        <input class="break" type="button" name="submit" value="Submit" onclick="makeMenuState.inputName()">
     </form>
     </div>
     
@@ -69,24 +69,27 @@
     <div class="formCont" id="playForm">
     <form>
         <select id="games"></select>
-        <input type="button" name="submit" value="Select" onclick="makePlayState.loadJeo()">
+        <input class="break" type="button" name="submit" value="Select" onclick="makePlayState.loadJeo()"> <!---------------------------------->
     </form>
     </div>
     
     <!-- Player Creation Menu -->
     <div class="formCont" id="playerForm">
     <form id="player">
-        <input type="text" name="playerName" value="Enter the game's name" size="25" maxlength="50">
-        <select id="colors">
-            <option value="Red">Red</option>
-            <option value="Green">Green</option>
-            <option value="Blue">Blue</option>
-            <option value="Purple">Purple</option>
-            <option value="Yellow">Yellow</option>
-            <option value="Orange">Orange</option>
-            <option value="Pink">Pink</option>
-        </select>
-        <input type="button" name="submit" value="Submit" onclick="makeMenuState.inputName()">
+        <h1>Create Teams</h1>
+        
+        <select id="players" size="7" style="width:215px;float:left;"></select>
+        
+        <div style="float:left;">
+            <input type="text" name="playerName" value="Team Name" size="25" maxlength="50" style="float:left;">
+
+            <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.()"
+                style="width:50px;height:50px;float:left;">
+        
+            <input type="button" name="submit" value="Submit" onclick="playMenuState.makePlayer()">
+        
+            <input type="button" name="submit" value="Start" onclick="makeMenuState.inputName()">
+        </div>
     </form>
     </div>
     
