@@ -1,14 +1,235 @@
 var playState = {
     
+    Opt: { MAIN: 1, HELP: 2, CANCEL: 3 },
+    
     create: function () {
+        //Get the current board
+        switch( currBoard.curr ) {
+            case 1:
+                this.currRound = currBoard.b1;
+                break;
+            case 2:
+                this.currRound = currBoard.b2;
+                break;
+            default:
+                break;
+        }
         
+        this.build();
     },
     
     update: function () {
-        
+        //Mouse over and mouse out check for buttons
+        for ( var i = 0; i < this.buttons.length; i++ ){
+            this.buttons[i].isOver();
+        }
     },
     
     build: function () {
+        layers = {
+            bgLayer: this.add.group(),
+            btnLayer: this.add.group(),
+            textLayer: this.add.group()
+        };
         
+        this.buttons = [];
+        
+        var btnColor, row, col, x, y, styles, labelText, heightTopics, ref, id;
+        var aqForm = 'aq';
+        var topicForm = 'topic';
+        
+        for ( row = 0; row < 6; row++ ) {
+            for ( var col = 0; col < 6; col++ ) {
+                posX = ( PADDING * ( col + 1 ) ) + ( widthBox * ( col ) );
+                posY = ( PADDING * ( row + 1 ) ) + ( heightBox * ( row ) );
+                
+                if ( row === 0 ) {
+                    btnColor = LIGHT_BLUE;
+                    
+                    ref = [col];
+                    
+                    id = topicForm;
+                    
+                    labelText = this.currRound.topics[col];
+                    
+                    //Adjust font size based on length of text
+                    if ( labelText.length < 13 ) {
+                        heightTopics = heightBox * 0.3;
+                    } else if ( labelText.length < 30 ) {
+                        heightTopics = heightBox * 0.25;
+                    } else {
+                        heightTopics = heightBox * 0.2;
+                    }
+                    
+                    styles = {
+                        font: heightTopics + 'px Arial',
+                        fill: LABEL_WHITE,
+                        align: 'center',
+                        wordWrap: true,
+                        wordWrapWidth: widthBox
+                    };
+                } else {
+                    //If a tile has been edited already, color it purple
+                    if ( this.currRound.board[row - 1][col].isFull() ) {
+                        btnColor = PURPLE;
+                    } else {
+                        btnColor = BLUE;
+                    }
+                    
+                    ref = [row - 1, col];
+                    
+                    id = aqForm;
+                    
+                    labelText = '$' + this.currRound.money[row - 1].toString();
+                    styles = {
+                        font: (heightBox * 0.6) + 'px Arial',
+                        fill: LABEL_BLUE
+                    };
+                }
+                
+                var label = game.add.text( posX + widthBox/2, posY + heightBox/2,
+                        labelText, styles );
+                label.anchor.setTo( 0.5,0.5 );
+                layers.textLayer.add( label );
+                
+                this.buttons.push( new RectButton( posX, posY, widthBox, heightBox,
+                        btnColor, partial( this.promptRunner, id, ref ) ) );
+            }
+        }
+        
+        //Draw menubar
+        var graphics = game.add.graphics( 0, 0 );
+        layers.bgLayer.add( graphics );
+        graphics.beginFill( LIGHT_BLUE );
+        graphics.drawRect( 0, ( PADDING * 7 ) + ( heightBox * 6 ), w, MENU_BAR_HEIGHT );
+        graphics.endFill();
+        
+        //Settings for menubar buttons
+        var padBar = PADDING/2;
+        var posYBar = ( PADDING * 7 ) + ( heightBox * 6 ) + padBar;
+        var btnBarHeight = 50;
+        var btnBarWidth = 200;
+        var btnBarWidthSmall = 100;
+        var barStyles = {
+            font: '30px Arial',
+            fill: LABEL_WHITE
+        };
+        
+        //Setup for final question button
+        id = aqForm;
+        ref = ['F'];
+        
+        //Draw menubar buttons
+        if ( currBoard.isDouble ) {
+            //Switch board button
+            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar ),
+                    posYBar, btnBarWidth, btnBarHeight, BLUE, this.switchBoard ) );
+            
+            //Final question button, color is changed if it has been edited
+            var fqColor;
+            if ( currBoard.finalQ.isFull() ) {
+                fqColor = PURPLE;
+            } else {
+                fqColor = BLUE;
+            }
+            this.buttons.push( new RectButton( ( w / 2 ) + ( btnBarWidth / 2 + padBar ), posYBar,
+                    btnBarWidth, btnBarHeight, fqColor, partial( this.promptRunner, id, ref ) ) );
+            
+            //Switch board label
+            var label1 = game.add.text( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar) +
+                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Switch Board', barStyles );
+            
+            label1.anchor.setTo( 0.5, 0.5 );
+            layers.textLayer.add( label1 );
+            
+            //Final Question Label
+            var label3 = game.add.text( ( w / 2 ) + ( btnBarWidth / 2 + padBar ) +
+                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Final Q', barStyles );
+            
+            label3.anchor.setTo( 0.5, 0.5 );
+            layers.textLayer.add( label3 );
+        } else {
+            //Final question button, color is changed if it has been edited
+            var fqColor;
+            if ( currBoard.finalQ.isFull() ) {
+                fqColor = PURPLE;
+            } else {
+                fqColor = BLUE;
+            }
+            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth / 2 ),
+                    posYBar, btnBarWidth, btnBarHeight, fqColor,
+                    partial( this.promptRunner, id, ref ) ) );
+            
+            //Final Question Label
+            var label1 = game.add.text( ( w / 2 ), posYBar +
+                    ( btnBarHeight / 2 ), 'Final Q', barStyles );
+            
+            label1.anchor.setTo( 0.5, 0.5 );
+            layers.textLayer.add( label1 );
+        }
+        
+        //Menu button
+        this.buttons.push( new RectButton( w - ( padBar + 100 ), posYBar,
+                btnBarWidthSmall, btnBarHeight, BLUE, this.menu ) );
+        
+        //Menu label
+        var label1 = game.add.text( w - ( padBar + 100 ) + ( btnBarWidthSmall / 2),
+                posYBar + ( btnBarHeight / 2 ), 'Menu', barStyles );
+        
+        label1.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label1 );
+    },
+    
+    promptRunner: function ( id, ref ) { ///////////////////////////////////////////////////////////////////////////
+        window.ref = ref;
+        var bd = makeState.currRound; //////////////////////
+        var form = document.getElementById( id );
+
+        if ( id === 'aq' && ref[0] !== 'F' ) {
+            form.elements['answer'].value = bd.board[ window.ref[0] ][ window.ref[1] ].a;
+            form.elements['question'].value = bd.board[ window.ref[0] ][ window.ref[1] ].q;
+        } else if ( id === 'aq' && ref[0] === 'F' ) {
+            form.elements['answer'].value = currBoard.finalQ.a;
+            form.elements['question'].value = currBoard.finalQ.q;
+        } else if ( id === 'topic' ) {
+            form.elements['topicText'].value = bd.topics[ window.ref[0] ] ;
+        }
+        
+        document.getElementById( id + 'Form' ).style.display = 'flex';
+    },
+    
+    menu: function () {
+        document.getElementById( 'pMenu' ).style.display = 'flex';
+    },
+    
+    menuInput: function ( cmd ) {
+        switch( cmd ) {
+            case this.Opt.MAIN:
+                document.getElementById( 'pMenu' ).style.display = 'none';
+                game.state.start( 'menu' );
+                break;
+            case this.Opt.HELP:
+                document.getElementById( 'pMenu' ).style.display = 'none';
+                document.getElementById( 'pHelp' ).style.display = 'flex';
+                break;
+            case this.Opt.CANCEL:
+                document.getElementById( 'pMenu' ).style.display = 'none';
+                document.getElementById( 'pHelp' ).style.display = 'none';
+                break;
+            default:
+                break;
+        }
+    },
+    
+    switchBoard: function () {
+        game.world.removeAll();
+        
+        if ( currBoard.curr === 1 ) {
+            currBoard.curr = 2;
+            game.state.start( 'play' );
+        } else {
+            currBoard.curr = 1;
+            game.state.start( 'play' );
+        }
     }
 };

@@ -33,6 +33,9 @@ var currBoard;
 //Data is added/removed in playMenu state only
 var currPlayers = [];
 
+//Cap on number of players
+var MAX_PLAYERS = 7;
+
 //Colors for buttons and text
 var LIGHT_BLUE = 0x0099FF;
 var BLUE = 0x0055FF;

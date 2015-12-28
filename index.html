@@ -111,7 +111,7 @@
     </form>
     </div>
     
-    <!-- Player Editing Menu -->
+    <!-- Player Editing Menu 
     <div class="formCont" id="playerForm">
     <form id="player">
         <h1>Edit Team</h1>
@@ -129,8 +129,23 @@
             <input type="button" name="submit" value="Back" onclick="playMenuState.play()">
         </div>
     </form>
+    </div> -->
+    
+    <!-- PlayState menus -->
+    <div class="formCont" id="pMenu">
+    <form>
+        <input type="button" name="submit" value="Main Menu" onclick="playState.menuInput(1)">
+        <input class="break" type="button" name="submit" value="Help" onclick="playState.menuInput(2)">
+        <input class="break" type="button" name="submit" value="Back" onclick="playState.menuInput(3)">
+    </form>
     </div>
     
+    <div class="formCont" id="pHelp">
+    <form>
+        <p>Placeholder text.</p>
+        <input class="break" type="button" name="submit" value="Exit" onclick="playState.menuInput(3)">
+    </form>
+    </div>
     
     <div id='gameDiv'></div>
 </body>

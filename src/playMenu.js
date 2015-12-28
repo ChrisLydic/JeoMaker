@@ -9,7 +9,11 @@ var playMenuState = {
         //Check if any games are in local storage
         if ( localStorage.length > 0 ) {
             for ( var i = 0, len = localStorage.length; i < len; i++ ) {
-                this.storage.push( localStorage.key( i ) );
+                if ( this.storage.indexOf( localStorage.key( i ) ) > -1) {
+                    //if the Jeo object has already been loaded, don't load it again
+                } else {
+                    this.storage.push( localStorage.key( i ) );
+                }
             }
             this.nameMenu();
         } else {
@@ -19,6 +23,7 @@ var playMenuState = {
     
     play: function () {
         if ( currPlayers.length > 1 ) {
+            document.getElementById( 'playerForm' ).style.display = 'none';
             game.state.start( 'play' );
         } else {
             console.log( 'Not enough players' );
@@ -39,6 +44,8 @@ var playMenuState = {
         document.getElementById( 'playForm' ).style.display = 'flex';
         var select = document.getElementById( 'games' );
         
+        select.innerHTML = '';
+        
         for ( var i = 0; i < this.storage.length; i++ ) {
             select.innerHTML = select.innerHTML + '<option>' + this.storage[i] + '</option>';
         }
@@ -55,6 +62,7 @@ var playMenuState = {
     
     playerMenu: function () {
         document.getElementById( 'playerForm' ).style.display = 'flex';
+        document.getElementById( 'player' ).elements['playerName'].select();
     },
     
     makePlayer: function () {
@@ -74,6 +82,10 @@ var playMenuState = {
             var player = new Player( name, color );
         
             currPlayers.push( player );
+            
+            form.elements['playerName'].value = '';
+            
+            form.elements['playerName'].focus();
         
             this.updatePlayers();
         }

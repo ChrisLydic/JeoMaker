@@ -284,8 +284,8 @@ var makeState = {
     },
     
     switchBoard: function () {
-        console.log(currBoard.curr);
         game.world.removeAll();
+        
         if ( currBoard.curr === 1 ) {
             currBoard.curr = 2;
             game.state.start( 'make' );
