@@ -8,7 +8,11 @@ var makeMenuState = {
         //Check if there are any saved Jeo objects in localStorage
         if ( localStorage.length > 0 ) {
             for ( var i = 0, len = localStorage.length; i < len; i++ ) {
-                this.storage.push( localStorage.key( i ) );
+                if ( this.storage.indexOf( localStorage.key( i ) ) > -1) {
+                    //if the Jeo object has already been loaded, don't load it again
+                } else {
+                    this.storage.push( localStorage.key( i ) );
+                }
             }
             this.nameMenu();
         } else {
@@ -50,6 +54,8 @@ var makeMenuState = {
     nameMenu: function () {
         document.getElementById( 'ddown' ).style.display = 'flex';
         var select = document.getElementById( 'down' );
+        
+        select.innerHTML = '';
         
         for ( var i = 0; i < this.storage.length; i++ ) {
             select.innerHTML = select.innerHTML + '<option>' + this.storage[i] + '</option>';

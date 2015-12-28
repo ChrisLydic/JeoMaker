@@ -3,7 +3,10 @@ var playMenuState = {
     storage: [],
     
     create: function () {
-        this.playerMenu();
+        //Reset player data
+        currPlayers = [];
+        
+        //Check if any games are in local storage
         if ( localStorage.length > 0 ) {
             for ( var i = 0, len = localStorage.length; i < len; i++ ) {
                 this.storage.push( localStorage.key( i ) );
@@ -15,26 +18,21 @@ var playMenuState = {
     },
     
     play: function () {
-        game.state.start( 'play' );
+        if ( currPlayers.length > 1 ) {
+            game.state.start( 'play' );
+        } else {
+            console.log( 'Not enough players' );
+        }
+    },
+    
+    return: function () {
+        document.getElementById( 'noSaves' ).style.display = 'none';
+        game.state.start( 'menu' );
     },
     
     noSaves: function () {
         //show a warning: no saved games available
-        
-        //var desc = "No saved games available.";
-        
-        //var textValues = {
-        //    font: '12px Arial',
-        //    fill: LABEL_WHITE,
-        //    wordWrap: true,
-        //    wordWrapWidth: w/2
-        //};
-        
-        //var label1 = game.add.text( game.world.centerX, game.world.centerY, desc, textValues );
-    },
-    
-    makePlayers: function () {
-        this.playerMenu();
+        document.getElementById( 'noSaves' ).style.display = 'flex';
     },
     
     nameMenu: function () {
@@ -52,7 +50,7 @@ var playMenuState = {
         document.getElementById( 'playForm' ).style.display = 'none';
         
         currBoard = unobjectify( JSON.parse( localStorage.getItem( nameTemp ) ) );
-        this.makePlayers();
+        this.playerMenu();
     },
     
     playerMenu: function () {
@@ -63,12 +61,22 @@ var playMenuState = {
         var form = document.getElementById( 'player' );
         var name = form.elements['playerName'].value;
         var color = form.elements['colors'].value;
-                
-        var player = new Player( name, color );
         
-        currPlayers.push( player );
+        var checkUnique = false;
         
-        this.updatePlayers();
+        for ( var i = 0; i < currPlayers.length; i++ ) {
+            if ( currPlayers[i].name == name ) { checkUnique = true; }
+        }
+        
+        if ( name.length == 0 || checkUnique ) {
+            console.log( 'Invalid player name' );
+        } else {
+            var player = new Player( name, color );
+        
+            currPlayers.push( player );
+        
+            this.updatePlayers();
+        }
     },
     
     updatePlayers: function () {
@@ -79,5 +87,11 @@ var playMenuState = {
         for ( var i = 0; i < currPlayers.length; i++ ) {
             select.innerHTML = select.innerHTML + '<option>' + currPlayers[i].name + '</option>';
         }
+    },
+    
+    colorSet: function () {
+        //change color selector's color to the selected color
+        var colors = document.getElementById( 'colors' );
+        colors.value = colors.value;
     }
 };

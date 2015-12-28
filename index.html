@@ -10,6 +10,10 @@
 
 <body>
     
+    <!--------------------------->
+    <!-- HTML for game builder -->
+    <!--------------------------->
+    
     <!-- Input forms -->
     <div class="formCont" id="topicForm">
     <form id="topic">
@@ -65,11 +69,25 @@
     </form>
     </div>
     
+    
+    <!---------------------------->
+    <!-- HTML for playing games -->
+    <!---------------------------->
+    
+    
     <!-- Drop down menu for Play State -->
     <div class="formCont" id="playForm">
     <form>
         <select id="games"></select>
-        <input class="break" type="button" name="submit" value="Select" onclick="makePlayState.loadJeo()"> <!---------------------------------->
+        <input class="break" type="button" name="submit" value="Select" onclick="playMenuState.loadJeo()"> <!---------------------------------->
+    </form>
+    </div>
+    
+    <!-- Play State error popup -->
+    <div class="formCont" id="noSaves">
+    <form>
+        <p>There are no saved games.</p>
+        <input class="break" type="button" name="submit" value="Exit" onclick="playMenuState.return()">
     </form>
     </div>
     
@@ -78,17 +96,37 @@
     <form id="player">
         <h1>Create Teams</h1>
         
-        <select id="players" size="7" style="width:215px;float:left;"></select>
+        <select id="players" size="8" style="width:215px;float:left;"></select>
         
         <div style="float:left;">
             <input type="text" name="playerName" value="Team Name" size="25" maxlength="50" style="float:left;">
 
-            <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.()"
+            <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
                 style="width:50px;height:50px;float:left;">
         
             <input type="button" name="submit" value="Submit" onclick="playMenuState.makePlayer()">
         
-            <input type="button" name="submit" value="Start" onclick="makeMenuState.inputName()">
+            <input type="button" name="submit" value="Start" onclick="playMenuState.play()">
+        </div>
+    </form>
+    </div>
+    
+    <!-- Player Editing Menu -->
+    <div class="formCont" id="playerForm">
+    <form id="player">
+        <h1>Edit Team</h1>
+        
+        <select id="players" size="8" style="width:215px;float:left;"></select>
+        
+        <div style="float:left;">
+            <input type="text" name="playerName" value="Team Name" size="25" maxlength="50" style="float:left;">
+
+            <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
+                style="width:50px;height:50px;float:left;">
+        
+            <input type="button" name="submit" value="Submit" onclick="playMenuState.makePlayer()">
+        
+            <input type="button" name="submit" value="Back" onclick="playMenuState.play()">
         </div>
     </form>
     </div>
