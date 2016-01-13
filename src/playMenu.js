@@ -22,10 +22,16 @@ var playMenuState = {
     },
     
     play: function () {
+        var form = document.getElementById( 'player' );
+        var name = form.elements['playerName'];
+        
         if ( currPlayers.length > 1 ) {
+            document.getElementById( 'players' ).innerHTML = '';
+            name.value = 'Team Name';
             document.getElementById( 'playerForm' ).style.display = 'none';
             game.state.start( 'play' );
         } else {
+            name.value = 'Not enough players';
             console.log( 'Not enough players' );
         }
     },
@@ -67,26 +73,30 @@ var playMenuState = {
     
     makePlayer: function () {
         var form = document.getElementById( 'player' );
-        var name = form.elements['playerName'].value;
+        var name = form.elements['playerName'];
         var color = form.elements['colors'].value;
         
+        //Remove leading and trailing spaces
+        name.value = name.value.trim();
+        
+        //Check if player already exists
         var checkUnique = false;
         
         for ( var i = 0; i < currPlayers.length; i++ ) {
-            if ( currPlayers[i].name == name ) { checkUnique = true; }
+            if ( currPlayers[i].name == name.value ) { checkUnique = true; }
         }
         
-        if ( name.length == 0 || checkUnique ) {
+        //Validate name
+        if ( name.value.length == 0 || checkUnique ) {
+            name.value = 'Invalid player name';
             console.log( 'Invalid player name' );
         } else {
-            var player = new Player( name, color );
-        
+            var player = new Player( name.value, color );
             currPlayers.push( player );
             
-            form.elements['playerName'].value = '';
+            name.value = '';
+            name.focus();
             
-            form.elements['playerName'].focus();
-        
             this.updatePlayers();
         }
     },
