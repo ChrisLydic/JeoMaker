@@ -34,9 +34,10 @@ var playState = {
         
         this.buttons = [];
         
-        var btnColor, row, col, x, y, styles, labelText, heightTopics, ref, id;
-        var aqForm = 'aq';
-        var topicForm = 'topic';
+        var btnColor, row, col, x, y, styles, labelText, heightTopics;
+        
+        var graphics = game.add.graphics( 0, 0 );
+        layers.bgLayer.add( graphics );
         
         for ( row = 0; row < 6; row++ ) {
             for ( var col = 0; col < 6; col++ ) {
@@ -45,10 +46,6 @@ var playState = {
                 
                 if ( row === 0 ) {
                     btnColor = LIGHT_BLUE;
-                    
-                    ref = [col];
-                    
-                    id = topicForm;
                     
                     labelText = this.currRound.topics[col];
                     
@@ -68,44 +65,43 @@ var playState = {
                         wordWrap: true,
                         wordWrapWidth: widthBox
                     };
+                    
+                    graphics.beginFill( btnColor );
+                    graphics.drawRect( posX, posY, widthBox, heightBox );
+                    graphics.endFill();
                 } else {
-                    //If a tile has been edited already, color it purple
+                    //If a tile has been answered already, color it purple
                     if ( this.currRound.board[row - 1][col].isFull() ) {
                         btnColor = PURPLE;
                     } else {
                         btnColor = BLUE;
                     }
                     
-                    ref = [row - 1, col];
-                    
-                    id = aqForm;
-                    
                     labelText = '$' + this.currRound.money[row - 1].toString();
                     styles = {
                         font: (heightBox * 0.6) + 'px Arial',
                         fill: LABEL_BLUE
                     };
+                    
+                    this.buttons.push( new RectButton( posX, posY, widthBox, heightBox,
+                        btnColor, partial( this.promptRunner, row - 1, col ) ) );
                 }
                 
                 var label = game.add.text( posX + widthBox/2, posY + heightBox/2,
                         labelText, styles );
                 label.anchor.setTo( 0.5,0.5 );
                 layers.textLayer.add( label );
-                
-                this.buttons.push( new RectButton( posX, posY, widthBox, heightBox,
-                        btnColor, partial( this.promptRunner, id, ref ) ) );
             }
         }
         
         //Draw menubar
-        var graphics = game.add.graphics( 0, 0 );
-        layers.bgLayer.add( graphics );
         graphics.beginFill( LIGHT_BLUE );
         graphics.drawRect( 0, ( PADDING * 7 ) + ( heightBox * 6 ), w, MENU_BAR_HEIGHT );
         graphics.endFill();
         
         //Settings for menubar buttons
         var padBar = PADDING/2;
+        var posXBar = 0;
         var posYBar = ( PADDING * 7 ) + ( heightBox * 6 ) + padBar;
         var btnBarHeight = 50;
         var btnBarWidth = 200;
@@ -115,87 +111,70 @@ var playState = {
             fill: LABEL_WHITE
         };
         
-        //Setup for final question button
-        id = aqForm;
-        ref = ['F'];
-        
         //Draw menubar buttons
         if ( currBoard.isDouble ) {
             //Switch board button
-            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar ),
-                    posYBar, btnBarWidth, btnBarHeight, BLUE, this.switchBoard ) );
+            posXBar = w - ( ( 2 * btnBarWidth ) + btnBarWidthSmall + ( 3 * padBar ) );
             
-            //Final question button, color is changed if it has been edited
-            var fqColor;
-            if ( currBoard.finalQ.isFull() ) {
-                fqColor = PURPLE;
-            } else {
-                fqColor = BLUE;
-            }
-            this.buttons.push( new RectButton( ( w / 2 ) + ( btnBarWidth / 2 + padBar ), posYBar,
-                    btnBarWidth, btnBarHeight, fqColor, partial( this.promptRunner, id, ref ) ) );
+            this.buttons.push( new RectButton( posXBar, posYBar, btnBarWidth,
+                    btnBarHeight, BLUE, this.switchBoard ) );
             
             //Switch board label
-            var label1 = game.add.text( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar) +
-                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Switch Board', barStyles );
+            posXBar += btnBarWidth / 2;
             
-            label1.anchor.setTo( 0.5, 0.5 );
-            layers.textLayer.add( label1 );
-            
-            //Final Question Label
-            var label3 = game.add.text( ( w / 2 ) + ( btnBarWidth / 2 + padBar ) +
-                    ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Final Q', barStyles );
+            var label3 = game.add.text( posXBar, posYBar + ( btnBarHeight / 2 ),
+                    'Switch Board', barStyles );
             
             label3.anchor.setTo( 0.5, 0.5 );
             layers.textLayer.add( label3 );
-        } else {
-            //Final question button, color is changed if it has been edited
-            var fqColor;
-            if ( currBoard.finalQ.isFull() ) {
-                fqColor = PURPLE;
-            } else {
-                fqColor = BLUE;
-            }
-            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth / 2 ),
-                    posYBar, btnBarWidth, btnBarHeight, fqColor,
-                    partial( this.promptRunner, id, ref ) ) );
-            
-            //Final Question Label
-            var label1 = game.add.text( ( w / 2 ), posYBar +
-                    ( btnBarHeight / 2 ), 'Final Q', barStyles );
-            
-            label1.anchor.setTo( 0.5, 0.5 );
-            layers.textLayer.add( label1 );
         }
         
+        //Final question button
+        posXBar = w - ( btnBarWidth + btnBarWidthSmall + ( 2 * padBar ) );
+        
+        this.buttons.push( new RectButton( posXBar, posYBar, btnBarWidth,
+                btnBarHeight, BLUE, partial( this.promptRunner, 0, 0 ) ) );
+        
+        //Final Question Label
+        posXBar += btnBarWidth / 2;
+        
+        var label2 = game.add.text( posXBar, posYBar + ( btnBarHeight / 2 ),
+                'Final Q', barStyles );
+        
+        label2.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label2 );
+        
         //Menu button
-        this.buttons.push( new RectButton( w - ( padBar + 100 ), posYBar,
-                btnBarWidthSmall, btnBarHeight, BLUE, this.menu ) );
+        posXBar = w - ( btnBarWidthSmall + padBar );
+        
+        this.buttons.push( new RectButton( posXBar, posYBar, btnBarWidthSmall,
+                btnBarHeight, BLUE, this.menu ) );
         
         //Menu label
-        var label1 = game.add.text( w - ( padBar + 100 ) + ( btnBarWidthSmall / 2),
-                posYBar + ( btnBarHeight / 2 ), 'Menu', barStyles );
+        posXBar += btnBarWidthSmall / 2;
+        
+        var label1 = game.add.text( posXBar, posYBar + ( btnBarHeight / 2 ),
+                'Menu', barStyles );
         
         label1.anchor.setTo( 0.5, 0.5 );
         layers.textLayer.add( label1 );
     },
     
-    promptRunner: function ( id, ref ) { ///////////////////////////////////////////////////////////////////////////
-        window.ref = ref;
-        var bd = makeState.currRound; //////////////////////
-        var form = document.getElementById( id );
-
-        if ( id === 'aq' && ref[0] !== 'F' ) {
-            form.elements['answer'].value = bd.board[ window.ref[0] ][ window.ref[1] ].a;
-            form.elements['question'].value = bd.board[ window.ref[0] ][ window.ref[1] ].q;
-        } else if ( id === 'aq' && ref[0] === 'F' ) {
-            form.elements['answer'].value = currBoard.finalQ.a;
-            form.elements['question'].value = currBoard.finalQ.q;
-        } else if ( id === 'topic' ) {
-            form.elements['topicText'].value = bd.topics[ window.ref[0] ] ;
-        }
+    promptRunner: function ( x, y ) {
+        game.world.removeAll();
         
-        document.getElementById( id + 'Form' ).style.display = 'flex';
+        var text = playState.currRound.board[ x ][ y ].a;
+        
+        styles = {
+            font: '24px Arial',
+            fill: LABEL_WHITE,
+            align: 'center',
+            wordWrap: true,
+            wordWrapWidth: w - 100
+        };
+        
+        var label = game.add.text( w/2, h/2, text, styles );
+        label.anchor.setTo( 0.5,0.5 );
     },
     
     menu: function () {

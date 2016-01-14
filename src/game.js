@@ -327,7 +327,7 @@ var RectButton = function ( x, y, width, height, color, onDown ) {
     
     this.graphics = game.add.graphics( 0, 0 );
     
-    //Check if this function is called from a state without a layers object
+    //Check if this function is called from a state with a layers object
     if ( typeof layers !== undefined ) {
         layers.btnLayer.add( this.graphics );
     }
