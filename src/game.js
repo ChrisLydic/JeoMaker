@@ -166,7 +166,7 @@ var unobjectify = function ( gameData ) {
         count = 0;
         for ( var i = 0; i < 5; i++ ) {
             for ( var j = 0; j < 6; j++ ) {
-                data.b1.board[i][j].update( gameData.b2.a[count], gameData.b2.q[count] );
+                data.b2.board[i][j].update( gameData.b2.a[count], gameData.b2.q[count] );
                 count++;
             }
         }

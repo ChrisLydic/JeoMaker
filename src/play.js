@@ -160,21 +160,74 @@ var playState = {
         layers.textLayer.add( label1 );
     },
     
+    drawTeams: function ( width, offset ) {
+        //Calculate number of teams to draw
+        
+        //Setup
+        
+        //Draw teams in loop
+        for () {}
+    },
+    
+    drawTeam: function ( x, y ) {
+        
+    },
+    
     promptRunner: function ( x, y ) {
         game.world.removeAll();
         
-        var text = playState.currRound.board[ x ][ y ].a;
+        var text = playState.currRound.board[x][y].a;
         
         styles = {
             font: '24px Arial',
             fill: LABEL_WHITE,
             align: 'center',
             wordWrap: true,
-            wordWrapWidth: w - 100
+            wordWrapWidth: w - 100,
+            wordWrapHeight: h - 200,
         };
         
-        var label = game.add.text( w/2, h/2, text, styles );
-        label.anchor.setTo( 0.5,0.5 );
+        var label = game.add.text( w / 2, ( ( h / 2 ) - 100 ), text, styles );
+        label.anchor.setTo( 0.5, 0.5 );
+        
+        //players//
+        
+        //Button setup
+        var pad = 50;
+        var btnWidth = 200;
+        var btnHeight = 50;
+        var halfWidth = w/2;
+        var posX = 0;
+        var posY = h - btnHeight;
+        var posYLabel = posY + ( btnHeight / 2 );
+        
+        //Exit button
+        posX = halfWidth - ( pad + btnWidth );
+        
+        this.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, this.build ) );
+        
+        //Exit label
+        posX += btnWidth / 2;
+        
+        var label1 = game.add.text( posX, posYLabel, 'Back', barStyles );
+        
+        label1.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label1 );
+        
+        //Question Button
+        posX = halfWidth + pad + btnWidth;
+        
+        this.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, partial( this.showQuestion, x, y ) ) );
+        
+        //Question Label
+        posX -= btnWidth / 2;
+        
+        var label3 = game.add.text( posX, posYLabel, 'Question', barStyles );
+        
+        label3.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label3 );
     },
     
     menu: function () {
