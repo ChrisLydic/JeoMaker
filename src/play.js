@@ -1,6 +1,12 @@
 var playState = {
     
+    //Options for menus
     Opt: { MAIN: 1, HELP: 2, CANCEL: 3 },
+    
+    //Track offset of currPlayers, only used if they do not fit on one line
+    offset: 0,
+    
+    buttons: [],
     
     create: function () {
         //Get the current board
@@ -84,7 +90,7 @@ var playState = {
                     };
                     
                     this.buttons.push( new RectButton( posX, posY, widthBox, heightBox,
-                        btnColor, partial( this.promptRunner, row - 1, col ) ) );
+                        btnColor, partial( this.showAnswer, row - 1, col ) ) );
                 }
                 
                 var label = game.add.text( posX + widthBox/2, posY + heightBox/2,
@@ -111,6 +117,9 @@ var playState = {
             fill: LABEL_WHITE
         };
         
+        //Parameter for makeTeams()
+        var teamWidth = w;
+        
         //Draw menubar buttons
         if ( currBoard.isDouble ) {
             //Switch board button
@@ -127,13 +136,15 @@ var playState = {
             
             label3.anchor.setTo( 0.5, 0.5 );
             layers.textLayer.add( label3 );
+            
+            teamWidth -= btnBarWidth + padBar;
         }
         
         //Final question button
         posXBar = w - ( btnBarWidth + btnBarWidthSmall + ( 2 * padBar ) );
         
         this.buttons.push( new RectButton( posXBar, posYBar, btnBarWidth,
-                btnBarHeight, BLUE, partial( this.promptRunner, 0, 0 ) ) );
+                btnBarHeight, BLUE, this.showFinal ) );
         
         //Final Question Label
         posXBar += btnBarWidth / 2;
@@ -158,76 +169,265 @@ var playState = {
         
         label1.anchor.setTo( 0.5, 0.5 );
         layers.textLayer.add( label1 );
+        
+        teamWidth -= btnBarWidth + btnBarWidthSmall + ( 2 * padBar );
+        
+        var teamX = 10;
+        var teamY = h - 60;
+        
+        if ( this.oneLineFit( teamWidth, 0 ) ) {
+            this.makeTeams( teamX, teamY, teamWidth, 0, 200 );
+        } else {
+            
+        }
     },
     
-    drawTeams: function ( width, offset ) {
-        //Calculate number of teams to draw
-        
+    makeTeams: function ( x, y, width, offset, amount ) {
         //Setup
+        var numTeams;
+        var teamWidths;
+        
+        //Calculate number of teams to draw
+        teamWidths = this.countTeams( width, offset );
+        numTeams = teamWidths.length;
         
         //Draw teams in loop
-        for () {}
-    },
-    
-    drawTeam: function ( x, y ) {
+        for ( var index = offset; index < ( numTeams + offset ); index++ ) {
+            this.drawTeam( x, y, index, amount );
+            x += teamWidths[index - offset];
+        }
         
+        return numTeams;
     },
     
-    promptRunner: function ( x, y ) {
+    drawTeam: function ( x, y, index, amount ) {
+        //setup
+        var graphics = game.add.graphics( 0, 0 );
+        
+        colorSize = 50;
+        pad = 5;
+        
+        nameStyles = {
+            font: '16px Arial',
+            fill: LABEL_WHITE,
+        };
+        scoreStyles = {
+            font: '34px Arial',
+            fill: LABEL_WHITE,
+        };
+        
+        //draw team color
+        //convert color given by html to format phaser recognizes
+        graphics.beginFill( Phaser.Color.hexToRGB( currPlayers[index].avatar ) );
+        graphics.drawRect( x, y, colorSize, colorSize );
+        graphics.endFill();
+        
+        //draw team name
+        x += colorSize + pad;
+        
+        var label1 = game.add.text( x, y, currPlayers[index].name, nameStyles );
+        
+        //draw team score
+        y += label1.height;
+        
+        //phaser won't display score when it is zero so '' is appended
+        //to convert it to a string beforehand
+        var label2 = game.add.text( x, y, '' + currPlayers[index].score, scoreStyles );
+        
+        //make buttons
+        if ( label1.width > MAX_SCORE_WIDTH ) {
+            x += label1.width + pad;
+        } else {
+            x += MAX_SCORE_WIDTH + pad;
+        }
+
+        y -= label1.height;
+        
+        button1 = game.add.button( x, y, 'increment', this.incText, this, 1, 0 );
+        button1.amount = amount;
+        button1.index = index;
+        button1.label = label2;
+        
+        y += button1.height;
+        
+        button2 = game.add.button( x, y, 'decrement', this.decText, this, 1, 0 );
+        button2.amount = amount;
+        button2.index = index;
+        button2.label = label2;
+    },
+    
+    countTeams: function ( width, offset ) {
+        var teamWidths = [];
+        var teamWidth;
+        var staticWidth = 85;
+        var teamPad = 30;
+        
+        for ( var count = offset; count < currPlayers.length; count++ ) {
+            teamWidth = staticWidth + teamPad;
+            
+            var label = game.add.text( w, h, currPlayers[count].name,
+                    { font: '16px Arial' } );
+            
+            if ( label.width > MAX_SCORE_WIDTH ) {
+                teamWidth += label.width;
+            } else {
+                teamWidth += MAX_SCORE_WIDTH;
+            }
+            
+            label.destroy();
+            
+            if ( ( width -= teamWidth ) >= 0 ) {
+                teamWidths.push( teamWidth );
+            } else {
+                break;
+            }
+        }
+        
+        return teamWidths;
+    },
+    
+    oneLineFit: function ( width, offset ) {
+        var teams = this.countTeams( width, offset );
+        
+        if ( currPlayers.length == teams.length ) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    
+    incText: function ( button ) {
+        currPlayers[button.index].setScore( button.amount );
+        button.label.setText( '' + currPlayers[button.index].score );
+    },
+    
+    decText: function ( button ) {
+        currPlayers[button.index].setScore( -(button.amount) );
+        button.label.setText( '' + currPlayers[button.index].score );
+    },
+    
+    showAnswer: function ( x, y ) {
         game.world.removeAll();
+        game.input.onDown.removeAll();
         
+        playState.buttons = [];
+        
+        layers = {
+            btnLayer: playState.add.group(),
+            textLayer: playState.add.group()
+        };
+        
+        //Get text height
+        var teamPad = 25;
+        var teamHeight = 50;
+        var teamSpace = teamPad;
+        if ( playState.oneLineFit( w, 0 ) ) {
+            teamSpace += teamHeight + teamPad;
+        } else {
+            var offs = 0;
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                var teamWidths = playState.countTeams( w, offs );
+                offs += teamWidths.length;
+                teamSpace += teamHeight + teamPad;
+            }
+        }
+        
+        //Draw answer
         var text = playState.currRound.board[x][y].a;
-        
+
         styles = {
-            font: '24px Arial',
+            font: '28px Arial',
             fill: LABEL_WHITE,
             align: 'center',
             wordWrap: true,
             wordWrapWidth: w - 100,
-            wordWrapHeight: h - 200,
+            wordWrapHeight: h - ( 150 + teamSpace ),
         };
         
-        var label = game.add.text( w / 2, ( ( h / 2 ) - 100 ), text, styles );
-        label.anchor.setTo( 0.5, 0.5 );
+        var label1 = game.add.text( w / 2, 50, text, styles );
+        label1.anchor.setTo( 0.5, 0 );
         
-        //players//
+        //Add teams
+        if ( playState.oneLineFit( w, 0 ) ) {
+            var teamWidthsArr = playState.countTeams( w, 0 );
+            var teamWidths = 0;
+            
+            //Get width the teams will take up
+            for ( var i = 0; i < teamWidthsArr.length; i++ ){
+                teamWidths += teamWidthsArr[i];
+            }
+            
+            //Account for extra padding at the end
+            teamWidths -= 30;
+            
+            var teamX = ( w - teamWidths ) / 2;
+            var teamY = h - ( teamSpace + 100 );
+            
+            var value = playState.currRound.money[x % 5];
+            
+            playState.makeTeams( teamX, teamY, teamWidths += 30, 0, value );
+        } else {
+            var offs = 0;
+            var teamX = 10;
+            var teamY = h - ( teamSpace + 100 );
+            
+            var value = playState.currRound.money[x % 5];
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                var teamWidths = playState.countTeams( w, offs );
+                offs += teamWidths.length;
+                
+                playState.makeTeams( teamX, teamY, w, offs, value );
+                
+                teamY += teamHeight + teamPad;
+            }
+        }
         
         //Button setup
         var pad = 50;
         var btnWidth = 200;
         var btnHeight = 50;
-        var halfWidth = w/2;
+        var halfWidth = w / 2;
         var posX = 0;
-        var posY = h - btnHeight;
+        var posY = h - ( btnHeight + pad );
         var posYLabel = posY + ( btnHeight / 2 );
+        var barStyles = {
+            font: '30px Arial',
+            fill: LABEL_WHITE
+        };
         
         //Exit button
         posX = halfWidth - ( pad + btnWidth );
-        
-        this.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, this.build ) );
+                
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, playState.rebuild ) );
         
         //Exit label
         posX += btnWidth / 2;
         
-        var label1 = game.add.text( posX, posYLabel, 'Back', barStyles );
+        var label2 = game.add.text( posX, posYLabel, 'Back', barStyles );
         
-        label1.anchor.setTo( 0.5, 0.5 );
-        layers.textLayer.add( label1 );
+        label2.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label2 );
         
         //Question Button
-        posX = halfWidth + pad + btnWidth;
+        posX = halfWidth + pad;
         
-        this.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, partial( this.showQuestion, x, y ) ) );
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, partial( playState.showQuestion, x, y ) ) );
         
         //Question Label
-        posX -= btnWidth / 2;
+        posX += btnWidth / 2;
         
         var label3 = game.add.text( posX, posYLabel, 'Question', barStyles );
         
         label3.anchor.setTo( 0.5, 0.5 );
         layers.textLayer.add( label3 );
+    },
+    
+    showQuestion: function ( x, y ) {
+        
     },
     
     menu: function () {
@@ -263,5 +463,10 @@ var playState = {
             currBoard.curr = 1;
             game.state.start( 'play' );
         }
+    },
+    
+    rebuild: function () {
+        game.world.removeAll();
+        game.state.start( 'play' );
     }
 };

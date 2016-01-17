@@ -12,7 +12,7 @@ var menuState = {
         game.state.start( 'playMenu' );
     },
     
-    credits: function () {
+    about: function () {
         game.world.removeAll();
     },
     
@@ -36,6 +36,6 @@ var menuState = {
         
         //var buttonStart3 = new LabelButton( 'Help', font, LABEL_WHITE, 'center',
         //        false, game, game.world.centerX, game.world.centerY + 90,
-        //        'button', this.credits, this );
+        //        'button', this.about, this );
     }
 };

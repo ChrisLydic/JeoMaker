@@ -15,8 +15,6 @@ var makeState = {
                 break;
         }
         
-        console.log(currBoard);
-        
         this.build();
     },
     

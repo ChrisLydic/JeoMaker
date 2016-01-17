@@ -36,6 +36,9 @@ var currPlayers = [];
 //Cap on number of players
 var MAX_PLAYERS = 7;
 
+//Cap on score size (based on max possible score)
+var MAX_SCORE_WIDTH = 113;
+
 //Colors for buttons and text
 var LIGHT_BLUE = 0x0099FF;
 var BLUE = 0x0055FF;
@@ -303,7 +306,7 @@ var Player = function ( name, avatar ) {
 Player.prototype.constructor = Player;
 
 Player.prototype.setScore = function ( amt ) {
-    score += amt;
+    this.score += amt;
 };
 
 Player.prototype.edit = function ( name, avatar ) {
