@@ -313,6 +313,7 @@ var playState = {
         playState.buttons = [];
         
         layers = {
+            bgLayer: playState.add.group(),
             btnLayer: playState.add.group(),
             textLayer: playState.add.group()
         };
@@ -347,6 +348,7 @@ var playState = {
         
         var label1 = game.add.text( w / 2, 50, text, styles );
         label1.anchor.setTo( 0.5, 0 );
+        layers.textLayer.add( label1 );
         
         //Add teams
         if ( playState.oneLineFit( w, 0 ) ) {
@@ -427,7 +429,36 @@ var playState = {
     },
     
     showQuestion: function ( x, y ) {
+        //Change text
+        layers.textLayer.getChildAt(0).setText( playState.currRound.board[x][y].q );
+        layers.textLayer.getChildAt(2).setText( 'Finish' );
         
+        //Remove buttons
+        for ( var i = 0; i < layers.btnLayer.children.length; i++ ) {
+            layers.btnLayer.children[i].destroy( true );
+        }
+        game.input.onDown.removeAll()
+        playState.buttons = [];
+        
+        //Button setup
+        var pad = 50;
+        var btnWidth = 200;
+        var btnHeight = 50;
+        var halfWidth = w / 2;
+        var posX = 0;
+        var posY = h - ( btnHeight + pad );
+        
+        //Back button
+        posX = halfWidth - ( pad + btnWidth );
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, partial( playState.showAnswer, x, y ) ) );
+        
+        //Exit button
+        posX = halfWidth + pad;
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, playState.rebuild ) );
     },
     
     menu: function () {
