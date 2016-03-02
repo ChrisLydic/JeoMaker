@@ -1,7 +1,13 @@
+//playMenu.js
+//Menu where the game is selected and loaded, and where teams are created
 var playMenuState = {
     
+    //Stores all localStorage keys
     storage: [],
     
+    //If there are any Jeo boards saved, load all their keys and open a menu to
+    //   select between them
+    //Otherwise, display error message
     create: function () {
         //Reset player data
         currPlayers = [];
@@ -15,12 +21,15 @@ var playMenuState = {
                     this.storage.push( localStorage.key( i ) );
                 }
             }
+            
             this.nameMenu();
         } else {
             this.noSaves();
         }
     },
     
+    //Clean up display and start game as long as there are enough players
+    //Current min is two players, change if needed for testing
     play: function () {
         var form = document.getElementById( 'player' );
         var name = form.elements['playerName'];
@@ -36,16 +45,18 @@ var playMenuState = {
         }
     },
     
+    //Go back to main menu
     return: function () {
         document.getElementById( 'noSaves' ).style.display = 'none';
         game.state.start( 'menu' );
     },
     
+    //Show error message: no saved games available
     noSaves: function () {
-        //show a warning: no saved games available
         document.getElementById( 'noSaves' ).style.display = 'flex';
     },
     
+    //Display all saved Jeo games so user can select one
     nameMenu: function () {
         document.getElementById( 'playForm' ).style.display = 'flex';
         var select = document.getElementById( 'games' );
@@ -57,6 +68,8 @@ var playMenuState = {
         }
     },
     
+    //If a Jeo game is selected, load the data from file and open
+    //   player creation menu
     loadJeo: function() {
         var games = document.getElementById( 'games' );
         var nameTemp = games.options[games.selectedIndex].text;
@@ -66,11 +79,13 @@ var playMenuState = {
         this.playerMenu();
     },
     
+    //Show the player creation menu
     playerMenu: function () {
         document.getElementById( 'playerForm' ).style.display = 'flex';
         document.getElementById( 'player' ).elements['playerName'].select();
     },
     
+    //Create player from user input, display error message if it is invalid
     makePlayer: function () {
         var form = document.getElementById( 'player' );
         var name = form.elements['playerName'];
@@ -101,6 +116,8 @@ var playMenuState = {
         }
     },
     
+    //Update players list in player creation menu,
+    //   called when new players are made
     updatePlayers: function () {
         var select = document.getElementById( 'players' );
         
@@ -111,8 +128,9 @@ var playMenuState = {
         }
     },
     
+    //Change color selector's color (in player creation menu)
+    //   to the selected color
     colorSet: function () {
-        //change color selector's color to the selected color
         var colors = document.getElementById( 'colors' );
         colors.value = colors.value;
     }

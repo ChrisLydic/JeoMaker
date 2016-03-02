@@ -9,6 +9,7 @@ var game = new Phaser.Game( w, h, Phaser.AUTO, 'gameDiv' );
 
 //Resize game, called from a game state when the game is resized
 //Has problems when using canvas
+//To be implemented...
 /*var winRes = function() {
     w = window.innerWidth;
     h = window.innerHeight;

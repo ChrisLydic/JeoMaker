@@ -1,3 +1,7 @@
+//play.js
+//Runs the play version of the Jeo game, allows team point values to be changed
+//   and question/answers to be selected, displayed, and exited
+//Also provides access to menus for going to main menu and showing help info
 var playState = {
     
     //Options for menus
@@ -6,8 +10,12 @@ var playState = {
     //Track offset of currPlayers, only used if they do not fit on one line
     offset: 0,
     
+    //Buttons that need to be put into the update loop are added here
+    //Phaser buttons do not go in here
     buttons: [],
     
+    //From the currently loaded Jeo object, get the correct board
+    //   (normal or double jeopardy)
     create: function () {
         //Get the current board
         switch( currBoard.curr ) {
@@ -24,6 +32,7 @@ var playState = {
         this.build();
     },
     
+    //Check for hovering over buttons
     update: function () {
         //Mouse over and mouse out check for buttons
         for ( var i = 0; i < this.buttons.length; i++ ){
@@ -31,6 +40,8 @@ var playState = {
         }
     },
     
+    //Draw the board on the canvas, add event listeners
+    //Also makes the switchBoard, finalQuestion, and menu buttons
     build: function () {
         layers = {
             bgLayer: this.add.group(),
@@ -182,6 +193,7 @@ var playState = {
         }
     },
     
+    //Draws a single row of teams using drawTeam()
     makeTeams: function ( x, y, width, offset, amount ) {
         //Setup
         var numTeams;
@@ -200,6 +212,8 @@ var playState = {
         return numTeams;
     },
     
+    //Draws a single team's info and buttons to adjust their score
+    //The amount variable is the increment/decrement amount
     drawTeam: function ( x, y, index, amount ) {
         //setup
         var graphics = game.add.graphics( 0, 0 );
@@ -256,18 +270,25 @@ var playState = {
         button2.label = label2;
     },
     
+    //Finds how many teams will fill one 'line' of space when drawn
+    //This allows handling of cases where the teams need multiple lines
+    //   of space to be displayed properly
     countTeams: function ( width, offset ) {
         var teamWidths = [];
         var teamWidth;
         var staticWidth = 85;
         var teamPad = 30;
         
+        //Iterate over each team, finding the max possible width of each team's
+        //   display information, and store each line's width
         for ( var count = offset; count < currPlayers.length; count++ ) {
             teamWidth = staticWidth + teamPad;
             
             var label = game.add.text( w, h, currPlayers[count].name,
                     { font: '16px Arial' } );
             
+            //Max width is defined by the MAX_SCORE_WIDTH or the width of the
+            //   team's name, whichever is larger
             if ( label.width > MAX_SCORE_WIDTH ) {
                 teamWidth += label.width;
             } else {
@@ -286,9 +307,13 @@ var playState = {
         return teamWidths;
     },
     
+    //Checks if a list of teams is going to fit on a single 'line' of space
+    //   using countTeams()
     oneLineFit: function ( width, offset ) {
         var teams = this.countTeams( width, offset );
         
+        //If the numver of players is equal to the length of teams,
+        //   they can all fit on a single line
         if ( currPlayers.length == teams.length ) {
             return true;
         } else {
@@ -296,16 +321,22 @@ var playState = {
         }
     },
     
+    //For team scores, increments by set amount
     incText: function ( button ) {
         currPlayers[button.index].setScore( button.amount );
         button.label.setText( '' + currPlayers[button.index].score );
     },
     
+    //For team scores, decrements by set amount
     decText: function ( button ) {
         currPlayers[button.index].setScore( -(button.amount) );
         button.label.setText( '' + currPlayers[button.index].score );
     },
     
+    //Opens the answer for a specific button, where the answer is displayed
+    //   along with teams and a couple navigation buttons
+    //Remember that Jeopardy begins with the answer and then reveals
+    //   the question
     showAnswer: function ( x, y ) {
         game.world.removeAll();
         game.input.onDown.removeAll();
@@ -428,6 +459,8 @@ var playState = {
         layers.textLayer.add( label3 );
     },
     
+    //Edits the answer's text and buttons to display the question
+    //This happens when the question button is clicked in the answer mode
     showQuestion: function ( x, y ) {
         //Change text
         layers.textLayer.getChildAt(0).setText( playState.currRound.board[x][y].q );
@@ -461,10 +494,13 @@ var playState = {
                 BLUE, playState.rebuild ) );
     },
     
+    //Opens the menu
     menu: function () {
         document.getElementById( 'pMenu' ).style.display = 'flex';
     },
     
+    //Switches between menus based on input from html buttons
+    //Also closes all menus
     menuInput: function ( cmd ) {
         switch( cmd ) {
             case this.Opt.MAIN:
@@ -484,6 +520,7 @@ var playState = {
         }
     },
     
+    //Switch between normal and double jeopardy boards
     switchBoard: function () {
         game.world.removeAll();
         
@@ -496,6 +533,7 @@ var playState = {
         }
     },
     
+    //Clear the display and rebuild it
     rebuild: function () {
         game.world.removeAll();
         game.state.start( 'play' );

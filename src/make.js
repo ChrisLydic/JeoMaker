@@ -1,7 +1,19 @@
+//make.js
+//Game builder, opens Jeo board in edit mode
+//Allows users to set or change questions, answers, and topics
+//Provides menus for saving the file or going to main menu
 var makeState = {
     
+    //'Enum' used by menuInput to determine what option has been triggered
+    //   from the menu buttons
     Opt: { MAIN: 1, HELP: 2, SAVE: 3, CANCEL: 4 },
     
+    //Buttons that need to be put into the update loop are added here
+    //Phaser buttons do not go in here
+    buttons: [],
+    
+    //From the currently loaded Jeo object, get the correct board
+    //   (normal or double jeopardy)
     create: function () {
         //Get the current board
         switch( currBoard.curr ) {
@@ -18,6 +30,7 @@ var makeState = {
         this.build();
     },
     
+    //Check for hovering over buttons
     update: function () {
         //Mouse over and mouse out check for buttons
         for ( var i = 0; i < this.buttons.length; i++ ){
@@ -25,24 +38,32 @@ var makeState = {
         }
     },
     
+    //Draw the board on the canvas, add event listeners
+    //Also makes the switchBoard, finalQuestion, menu, and save buttons
     build: function () {
+        //Phaser uses layers to determine location on z axis
         layers = {
             bgLayer: this.add.group(),
             btnLayer: this.add.group(),
             textLayer: this.add.group()
         };
         
-        this.buttons = [];
-        
+        //Setup for drawing variables
+        //ref variable provides location of the topic or answer/question
+        //   in the board object
         var btnColor, row, col, x, y, styles, labelText, heightTopics, ref, id;
         var aqForm = 'aq';
         var topicForm = 'topic';
         
+        //Nested loop over the 2d array storing the board, draws topics and
+        //   answer/questions
         for ( row = 0; row < 6; row++ ) {
             for ( var col = 0; col < 6; col++ ) {
+                //Setup padding amounts
                 posX = ( PADDING * ( col + 1 ) ) + ( widthBox * ( col ) );
                 posY = ( PADDING * ( row + 1 ) ) + ( heightBox * ( row ) );
                 
+                //Topics are on the zero row
                 if ( row === 0 ) {
                     btnColor = LIGHT_BLUE;
                     
@@ -68,7 +89,7 @@ var makeState = {
                         wordWrap: true,
                         wordWrapWidth: widthBox
                     };
-                } else {
+                } else { //answer/question buttons
                     //If a tile has been edited already, color it purple
                     if ( this.currRound.board[row - 1][col].isFull() ) {
                         btnColor = PURPLE;
@@ -80,6 +101,7 @@ var makeState = {
                     
                     id = aqForm;
                     
+                    //answer/question labels use a dollar amount
                     labelText = '$' + this.currRound.money[row - 1].toString();
                     styles = {
                         font: (heightBox * 0.6) + 'px Arial',
@@ -87,6 +109,7 @@ var makeState = {
                     };
                 }
                 
+                //Buttons are built based on presets from if statement
                 var label = game.add.text( posX + widthBox/2, posY + heightBox/2,
                         labelText, styles );
                 label.anchor.setTo( 0.5,0.5 );
@@ -190,6 +213,8 @@ var makeState = {
         layers.textLayer.add( label2 );
     },
     
+    //Called by an html form, takes input given in form and updates
+    //   the corresponding data in the board
     getInput: function ( id ) {// id is aq or topic
         var form = document.getElementById( id );
         
@@ -208,9 +233,13 @@ var makeState = {
         this.build();
     },
     
+    //When a topic or answer/question button is clicked, get their current
+    //   values and display a form for editing these values
     promptRunner: function ( id, ref ) {
+        //Store the reference of the topic or answer/question being edited
         window.ref = ref;
-        var bd = makeState.currRound; //////////////////////
+        
+        var bd = makeState.currRound; //scope issues here, this gets around them
         var form = document.getElementById( id );
 
         if ( id === 'aq' && ref[0] !== 'F' ) {
@@ -226,10 +255,12 @@ var makeState = {
         document.getElementById( id + 'Form' ).style.display = 'flex';
     },
     
+    //Updates a topic using a reference value
     updateTopic: function ( topic ) {
         this.currRound.topics[ window.ref[0] ] = topic;
     },
     
+    //Updates an answer/question using a reference value
     updateAQ: function ( a, q ) {
         if ( window.ref[0] === 'F' ) {
             currBoard.finalQ.update( a, q );
@@ -238,6 +269,7 @@ var makeState = {
         }
     },
     
+    //Brings up menus when their respective buttons are clicked
     popUp: function ( typeP ) {//types: menu, save
         switch( typeP ) {
             case 'menu':
@@ -255,6 +287,8 @@ var makeState = {
         }
     },
     
+    //Switches between menus based on input from html buttons
+    //Also closes all menus
     menuInput: function ( cmd ) {
         switch( cmd ) {
             case this.Opt.MAIN:
@@ -279,10 +313,12 @@ var makeState = {
         }
     },
     
+    //Create and save a JSON made from board data
     save: function () {
         localStorage.setItem( currBoard.name, JSON.stringify( objectify( currBoard ) ) );
     },
     
+    //Switch between normal and double jeopardy boards
     switchBoard: function () {
         game.world.removeAll();
         

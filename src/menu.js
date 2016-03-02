@@ -1,3 +1,5 @@
+//menu.js
+//Create the main menu for the game, with options to build a new game or play an existing game
 var menuState = {
     
     create: function () {
@@ -12,10 +14,7 @@ var menuState = {
         game.state.start( 'playMenu' );
     },
     
-    about: function () {
-        game.world.removeAll();
-    },
-    
+    //Display logo and buttons
     makeMenu: function () {
         var logoText = game.add.text( game.world.centerX, game.world.centerY - 85, 'JeoMaker', {
             font: '60px Arial',
@@ -34,6 +33,7 @@ var menuState = {
                 false, game, game.world.centerX, game.world.centerY + 40,
                 'button', this.play, this );
         
+        //About and help buttons will be added later
         //var buttonStart3 = new LabelButton( 'Help', font, LABEL_WHITE, 'center',
         //        false, game, game.world.centerX, game.world.centerY + 90,
         //        'button', this.about, this );

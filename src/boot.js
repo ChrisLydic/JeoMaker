@@ -1,3 +1,5 @@
+//boot.js
+//Setups game settings, loads progess bar for load state
 var bootState = {
     
     preload: function () {

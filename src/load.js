@@ -1,3 +1,5 @@
+//load.js
+//Load game assets, display progess bar
 var loadState = {
     
     preload: function () {
