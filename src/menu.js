@@ -6,36 +6,88 @@ var menuState = {
         this.makeMenu();
     },
     
-    startMake: function () {
-        game.state.start( 'makeMenu' );
-    },
-    
-    play: function () {
-        game.state.start( 'playMenu' );
-    },
-    
     //Display logo and buttons
     makeMenu: function () {
-        var logoText = game.add.text( game.world.centerX, game.world.centerY - 85, 'JeoMaker', {
+        var logoText = game.add.text( game.world.centerX, game.world.centerY - 105, 'JeoMaker', {
             font: '60px Arial',
             fill: '#FFFFFF'
         } );
-        
+
         logoText.anchor.setTo(0.5, 0.5);
         
-        var font = '30px Arial';
+        var font = {
+            font: '30px Arial',
+            fill: '#FFFFFF'
+        }
         
-        var buttonStart1 = new LabelButton( 'Create a New Game', font,
-                LABEL_WHITE, 'center', false, game, game.world.centerX,
-                game.world.centerY - 10, 'button', this.startMake, this );
+        //game builder label
+        var editorText = game.add.text( game.world.centerX, game.world.centerY - 30, 'Game Editor', font );
+
+        editorText.anchor.setTo(0.5, 0.5);
         
-        var buttonStart2 = new LabelButton( 'Play', font, LABEL_WHITE, 'center',
-                false, game, game.world.centerX, game.world.centerY + 40,
-                'button', this.play, this );
+        function make () {
+            editorText.fill = "#FFFF66";
+            game.state.start( 'makeMenu' );
+        }
         
-        //About and help buttons will be added later
-        //var buttonStart3 = new LabelButton( 'Help', font, LABEL_WHITE, 'center',
-        //        false, game, game.world.centerX, game.world.centerY + 90,
-        //        'button', this.about, this );
+        editorText.inputEnabled = true;
+        //phaser is having problems with the onInputOver event, so no hover
+        //   effects for now...
+        editorText.events.onInputDown.add( make, this );
+        
+        //play label
+        var playText = game.add.text( game.world.centerX, game.world.centerY + 20, 'Play', font );
+
+        playText.anchor.setTo(0.5, 0.5);
+        
+        function play () {
+            playText.fill = "#FFFF66";
+            game.state.start( 'playMenu' );
+        }
+        
+        playText.inputEnabled = true;
+        playText.events.onInputDown.add( play, this );
+        
+        //help label
+        var helpText = game.add.text( game.world.centerX, game.world.centerY + 70, 'Help', font );
+
+        helpText.anchor.setTo(0.5, 0.5);
+        
+        function help () {
+            helpText.fill = "#FFFF66";
+            document.getElementById( 'mHelp' ).style.display = 'flex';
+        }
+        function helpUp () {
+            helpText.fill = "#FFFFFF";
+        }
+        
+        helpText.inputEnabled = true;
+        helpText.events.onInputDown.add( help, this );
+        helpText.events.onInputDown.add( helpUp, this );
+        
+        //about label
+        var aboutText = game.add.text( game.world.centerX, game.world.centerY + 120, 'About', font );
+
+        aboutText.anchor.setTo(0.5, 0.5);
+        
+        function about () {
+            aboutText.fill = "#FFFF66";
+            document.getElementById( 'about' ).style.display = 'flex';
+        }
+        function aboutUp () {
+            aboutText.fill = "#FFFFFF";
+        }
+        
+        aboutText.inputEnabled = true;
+        aboutText.events.onInputDown.add( about, this );
+        aboutText.events.onInputUp.add( aboutUp, this );
+    },
+    
+    hideHelp: function () {
+        document.getElementById( 'mHelp' ).style.display = 'none';
+    },
+    
+    hideAbout: function () {
+        document.getElementById( 'about' ).style.display = 'none';
     }
 };

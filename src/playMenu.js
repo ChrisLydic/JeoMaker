@@ -76,6 +76,10 @@ var playMenuState = {
         document.getElementById( 'playForm' ).style.display = 'none';
         
         currBoard = unobjectify( JSON.parse( localStorage.getItem( nameTemp ) ) );
+        
+        //set all AQ to unanswered
+        
+        
         this.playerMenu();
     },
     

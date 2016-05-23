@@ -4,12 +4,31 @@
     <meta charset="utf-8">
     <title>Phaser Game</title>
     <link href="css/main.css" rel="stylesheet" type="text/css">
-    <script src="build/phaser.min.js"></script>
+    <script src="node_modules/phaser/build/phaser.min.js"></script>
     <script src="build/JeoMaker.min.js"></script>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 
 <body>
+    
+    <!--------------------------->
+    <!--  HTML for main menu   -->
+    <!--------------------------->
+    
+    <div class="formCont" id="mHelp">
+    <form>
+        <p>Placeholder text.</p>
+        <input class="break" type="button" name="submit" value="Exit" onclick="menuState.hideHelp()">
+    </form>
+    </div>
+    
+    <div class="formCont" id="about">
+    <form>
+        <p>Placeholder text.</p>
+        <input class="break" type="button" name="submit" value="Exit" onclick="menuState.hideAbout()">
+    </form>
+    </div>
+    
     
     <!--------------------------->
     <!-- HTML for game builder -->
@@ -35,15 +54,16 @@
     <div class="formCont" id="menu">
     <form>
         <input type="button" name="submit" value="Main Menu" onclick="makeState.menuInput(1)">
-        <input class="break" type="button" name="submit" value="Help" onclick="makeState.menuInput(2)">
-        <input class="break" type="button" name="submit" value="Back" onclick="makeState.menuInput(4)">
+        <input type="button" name="submit" value="Help" onclick="makeState.menuInput(2)">
+        <input type="button" name="submit" value="Back" onclick="makeState.menuInput(4)">
     </form>
     </div>
     
     <div class="formCont" id="save">
     <form>
-        <input type="button" name="submit" value="Save Anyways" onclick="makeState.menuInput(3)">
-        <input class="break" type="button" name="submit" value="Cancel" onclick="makeState.menuInput(4)">
+        <p>Warning: The board is not completely filled out.</p>
+        <input class="break" type="button" name="submit" value="Save Anyways" onclick="makeState.menuInput(3)">
+        <input type="button" name="submit" value="Cancel" onclick="makeState.menuInput(4)">
     </form>
     </div>
     
@@ -136,8 +156,8 @@
     <div class="formCont" id="pMenu">
     <form>
         <input type="button" name="submit" value="Main Menu" onclick="playState.menuInput(1)">
-        <input class="break" type="button" name="submit" value="Help" onclick="playState.menuInput(2)">
-        <input class="break" type="button" name="submit" value="Back" onclick="playState.menuInput(3)">
+        <input type="button" name="submit" value="Help" onclick="playState.menuInput(2)">
+        <input type="button" name="submit" value="Back" onclick="playState.menuInput(3)">
     </form>
     </div>
     

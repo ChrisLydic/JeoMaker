@@ -145,7 +145,7 @@ var makeState = {
         //Draw menubar buttons
         if ( currBoard.isDouble ) {
             //Switch board button
-            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar ),
+            this.buttons.push( new RectButton( ( w / 2 ) - ( btnBarWidth + padBar ),
                     posYBar, btnBarWidth, btnBarHeight, BLUE, this.switchBoard ) );
             
             //Final question button, color is changed if it has been edited
@@ -155,18 +155,18 @@ var makeState = {
             } else {
                 fqColor = BLUE;
             }
-            this.buttons.push( new RectButton( ( w / 2 ) + ( btnBarWidth / 2 + padBar ), posYBar,
+            this.buttons.push( new RectButton( ( w / 2 ) + ( padBar ), posYBar,
                     btnBarWidth, btnBarHeight, fqColor, partial( this.promptRunner, id, ref ) ) );
             
             //Switch board label
-            var label1 = game.add.text( ( w / 2 ) - ( btnBarWidth * 1.5 + padBar) +
+            var label1 = game.add.text( ( w / 2 ) - ( btnBarWidth + padBar) +
                     ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Switch Board', barStyles );
             
             label1.anchor.setTo( 0.5, 0.5 );
             layers.textLayer.add( label1 );
             
             //Final Question Label
-            var label3 = game.add.text( ( w / 2 ) + ( btnBarWidth / 2 + padBar ) +
+            var label3 = game.add.text( ( w / 2 ) + ( padBar ) +
                     ( btnBarWidth / 2 ), posYBar + ( btnBarHeight / 2 ), 'Final Q', barStyles );
             
             label3.anchor.setTo( 0.5, 0.5 );

@@ -12,6 +12,7 @@ var loadState = {
         game.load.image( 'button', '../assets/empty.png' );
         game.load.spritesheet( 'increment', '../assets/increment.png', 25, 25 );
         game.load.spritesheet( 'decrement', '../assets/decrement.png', 25, 25 );
+        game.load.spritesheet( 'incrementTeams', '../assets/incrementTeams.png', 50, 26 );
     },
     
     create: function () {

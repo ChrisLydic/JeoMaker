@@ -198,6 +198,7 @@ var unobjectify = function ( gameData ) {
 var AQ = function () {
     this.a = 'Answer';
     this.q = 'Question';
+    this.isAnswered = false;
 };
 
 AQ.prototype.constructor = AQ;
@@ -205,6 +206,10 @@ AQ.prototype.constructor = AQ;
 AQ.prototype.update = function ( a, q ) {
     this.a = a;
     this.q = q;
+};
+
+AQ.prototype.updateAnswer = function ( newBool ) {
+    this.isAnswered = newBool;
 };
 
 //Check if class has been changed from initial state
@@ -215,7 +220,6 @@ AQ.prototype.isFull = function () {
         return true;
     }
 };
-
 
 //Board Class
 //Contains information on a single round of Jeopardy
@@ -264,6 +268,15 @@ Board.prototype.isFull = function () {
     return true;
 };
 
+//Set all AQ objects to unanswered
+Board.prototype.isFull = function () {
+    for ( var i = 0; i < this.board.length; i++ ) {
+        for ( var j = 0; j < this.board[i].length; j++ ) {
+            this.board[i][j].updateAnswer( false );
+        }
+    }
+}
+
 
 //Jeo Class
 //Contains all data needed to make a JeoMaker game
@@ -293,6 +306,14 @@ Jeo.prototype.isFull = function () {
     } else {
         return ( this.finalQ.isFull() && this.b1.isFull() );
     }
+};
+
+//Set all AQ objects to unanswered
+Jeo.prototype.resetAnswers = function () {
+    if ( this.isDouble ) {
+        this.b2.resetAnswers();
+    }
+    this.b1.resetAnswers();
 };
 
 
@@ -329,7 +350,7 @@ var RectButton = function ( x, y, width, height, color, onDown ) {
     this.btn = new Phaser.Rectangle( this.x, this.y, this.width, this.height );
     var btnDown = new Phaser.Rectangle( this.x, this.y, this.width, this.height );
     
-    this.graphics = game.add.graphics( 0, 0 );
+    this.graphics = game.add.graphics( this.x, this.y );
     
     //Check if this function is called from a state with a layers object
     if ( typeof layers !== undefined ) {
@@ -353,51 +374,106 @@ RectButton.prototype.constructor = RectButton;
 RectButton.prototype.isOver = function () {
     if ( this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && !this.isIn ) {
         this.draw( 0xFFFFFF, 0.1 );
+        
+        var ticksIn = 0;
+        var ctxIn = this;
+        
+        function frameIn () {
+            if ( ticksIn < 4 ) {
+                ctxIn.graphics.height -= 2;
+                ctxIn.graphics.y += 1;
+                
+                ctxIn.graphics.width -= 2;
+                ctxIn.graphics.x += 1;
+                
+                ticksIn++;
+            } else if ( ticksIn == 8 ) {
+                clearInterval(animationIn)
+            } else if ( ticksIn < 6 ) {
+                ctxIn.graphics.height += 2;
+                ctxIn.graphics.y -= 1;
+                
+                ctxIn.graphics.width += 2;
+                ctxIn.graphics.x -= 1;
+                
+                ticksIn++;
+            } else {
+                ctxIn.graphics.height -= 2;
+                ctxIn.graphics.y += 1;
+                
+                ctxIn.graphics.width -= 2;
+                ctxIn.graphics.x += 1;
+                
+                ticksIn++;
+            }
+        }
+        ctxIn.graphics.height;
+        var animationIn = setInterval( frameIn, 30 );
+
         this.isIn = true;
+        
     } else if ( !this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && this.isIn ) {
         this.draw( this.color, 1 );
         this.isIn = false;
+        
+        var ticksOut = 0;
+        var ctxOut = this;
+        
+        function frameOut () {
+            if ( ticksOut < 4 ) {
+                ctxOut.graphics.height += 2;
+                ctxOut.graphics.y -= 1;
+                
+                ctxOut.graphics.width += 2;
+                ctxOut.graphics.x -= 1;
+                
+                ticksOut++;
+            } else if ( ticksOut == 20 ) {
+                clearInterval(animationOut)
+            } else if ( ticksOut < 9 ) {
+                ctxOut.graphics.height += 2;
+                ctxOut.graphics.y -= 1;
+                
+                ctxOut.graphics.width += 2;
+                ctxOut.graphics.x -= 1;
+                
+                ticksOut++;
+            } else if ( ticksOut < 14 ) {
+                ctxOut.graphics.height -= 2;
+                ctxOut.graphics.y += 1;
+                
+                ctxOut.graphics.width -= 2;
+                ctxOut.graphics.x += 1;
+                
+                ticksOut++;
+            } else if ( ticksOut < 17 ) {
+                ctxOut.graphics.height += 2;
+                ctxOut.graphics.y -= 1;
+                
+                ctxOut.graphics.width += 2;
+                ctxOut.graphics.x -= 1;
+                
+                ticksOut++;
+            } else {
+                ctxOut.graphics.height -= 2;
+                ctxOut.graphics.y += 1;
+                
+                ctxOut.graphics.width -= 2;
+                ctxOut.graphics.x += 1;
+                
+                ticksOut++;
+            }
+        }
+        ctxOut.graphics.height;
+        var animationOut = setInterval(frameOut, 20)
     }
 };
 
 //A rectangle drawing function, using Phaser.Graphics
 RectButton.prototype.draw = function ( color, opacity ) {
     this.graphics.beginFill( color, opacity );
-    this.graphics.drawRect( this.x, this.y, this.width, this.height );
+    this.graphics.drawRect( 0, 0, this.width, this.height );
     this.graphics.endFill();
-};
-
-
-//LabelButton Class
-//Creates a button from text
-var LabelButton = function ( label, font, textColor, align, wordWrap, game, x, y, key, callback, callbackContext ) {
-    Phaser.Button.call( this, game, x, y, key, callback, callbackContext );
-
-    //Create and style label
-    this.anchor.setTo( 0.5, 0.5 );
-    this.label = new Phaser.Text( game, 0, 0, label, {
-        'font': font,
-        'fill': textColor,
-        'align': align,
-        'wordWrap': wordWrap,
-        'wordWrapWidth': widthBox
-    } );
- 
-    //puts the label in the center of the button
-    this.label.anchor.setTo( 0.5, 0.5 );
- 
-    this.addChild( this.label );
-    this.setLabel( label );
- 
-    //adds button to game
-    game.add.existing( this );
-};
- 
-LabelButton.prototype = Object.create( Phaser.Button.prototype );
-LabelButton.prototype.constructor = LabelButton;
-
-LabelButton.prototype.setLabel = function ( label ) {
-   this.label.setText( label );
 };
 
 

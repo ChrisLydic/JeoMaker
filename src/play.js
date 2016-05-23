@@ -88,7 +88,7 @@ var playState = {
                     graphics.endFill();
                 } else {
                     //If a tile has been answered already, color it purple
-                    if ( this.currRound.board[row - 1][col].isFull() ) {
+                    if ( this.currRound.board[row - 1][col].isAnswered ) {
                         btnColor = PURPLE;
                     } else {
                         btnColor = BLUE;
@@ -123,6 +123,7 @@ var playState = {
         var btnBarHeight = 50;
         var btnBarWidth = 200;
         var btnBarWidthSmall = 100;
+        var teamBtnWidth = 50;
         var barStyles = {
             font: '30px Arial',
             fill: LABEL_WHITE
@@ -185,11 +186,23 @@ var playState = {
         
         var teamX = 10;
         var teamY = h - 60;
+        var baseCashAmount = 200;
         
+        //Makes the team data and buttons
+        //Dependent on whether or not teams can all fit in menu barStyle
+        //If not, a button controls which teams are currently shown
         if ( this.oneLineFit( teamWidth, 0 ) ) {
-            this.makeTeams( teamX, teamY, teamWidth, 0, 200 );
+            this.makeTeams( teamX, teamY, teamWidth, 0, baseCashAmount );
         } else {
+            teamWidth -= padBar + teamBtnWidth;
+            this.makeTeams( teamX, teamY, teamWidth, this.offset, baseCashAmount );
             
+            // var teamWidths = this.countTeams( teamWidth, this.offset );
+            // this.offset += teamWidths.length;
+        
+            teamX = teamWidth;
+            button1 = game.add.button( teamX, teamY, 'incrementTeams',
+                    partial( this.incTeams, teamWidth ), this, 1, 0 );
         }
     },
     
@@ -312,9 +325,9 @@ var playState = {
     oneLineFit: function ( width, offset ) {
         var teams = this.countTeams( width, offset );
         
-        //If the numver of players is equal to the length of teams,
+        //If the number of players is equal to the length of teams,
         //   they can all fit on a single line
-        if ( currPlayers.length == teams.length ) {
+        if ( ( currPlayers.length - offset ) == teams.length ) {
             return true;
         } else {
             return false;
@@ -331,6 +344,18 @@ var playState = {
     decText: function ( button ) {
         currPlayers[button.index].setScore( -(button.amount) );
         button.label.setText( '' + currPlayers[button.index].score );
+    },
+    
+    //Change teams currently shown in menu bar
+    incTeams: function ( teamWidth ) {
+        var teamWidths = playState.countTeams( teamWidth, this.offset );
+        this.offset += teamWidths.length;
+        
+        if ( this.offset == currPlayers.length ) {
+            this.offset = 0;
+        }
+        
+        this.rebuild();
     },
     
     //Opens the answer for a specific button, where the answer is displayed
@@ -357,12 +382,16 @@ var playState = {
             teamSpace += teamHeight + teamPad;
         } else {
             var offs = 0;
+            var teamWidths;
             
             while ( !( playState.oneLineFit( w, offs ) ) ) {
-                var teamWidths = playState.countTeams( w, offs );
+                teamWidths = playState.countTeams( w, offs );
                 offs += teamWidths.length;
                 teamSpace += teamHeight + teamPad;
             }
+            
+            teamWidths = playState.countTeams( w, offs );
+            teamSpace += teamHeight + teamPad;
         }
         
         //Draw answer
@@ -408,13 +437,16 @@ var playState = {
             var value = playState.currRound.money[x % 5];
             
             while ( !( playState.oneLineFit( w, offs ) ) ) {
+                playState.makeTeams( teamX, teamY, w, offs, value );
+                
                 var teamWidths = playState.countTeams( w, offs );
                 offs += teamWidths.length;
                 
-                playState.makeTeams( teamX, teamY, w, offs, value );
-                
                 teamY += teamHeight + teamPad;
             }
+            
+            playState.makeTeams( teamX, teamY, w, offs, value );
+            
         }
         
         //Button setup
@@ -487,11 +519,11 @@ var playState = {
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
                 BLUE, partial( playState.showAnswer, x, y ) ) );
         
-        //Exit button
+        //Finish button
         posX = halfWidth + pad;
         
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, playState.rebuild ) );
+                BLUE, partial( playState.qAnswered, x, y ) ) );
     },
     
     //Opens the menu
@@ -534,8 +566,14 @@ var playState = {
     },
     
     //Clear the display and rebuild it
+    qAnswered: function ( x, y ) {
+        playState.currRound.board[x][y].updateAnswer( true );
+        playState.rebuild();
+    },
+    
+    //Clear the display and rebuild it
     rebuild: function () {
         game.world.removeAll();
-        game.state.start( 'play' );
+        playState.build();
     }
 };
