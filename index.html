@@ -115,42 +115,22 @@
     <!-- Player Creation Menu -->
     <div class="formCont" id="playerForm">
     <form id="player">
-        <h1>Create Teams</h1>
+        <h1 id="playerHeader">Create Teams</h1>
         
         <select id="players" size="8" style="width:215px;float:left;"></select>
         
-        <div style="float:left;">
+        <div id="playerCont" style="float:left;">
             <input type="text" name="playerName" value="Team Name" size="25" maxlength="50" style="float:left;">
 
             <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
                 style="width:50px;height:50px;float:left;">
         
-            <input type="button" name="submit" value="Submit" onclick="playMenuState.makePlayer()">
+            <input type="button" name="addPlayer" value="Add" onclick="playMenuState.makePlayer()">
         
-            <input type="button" name="submit" value="Start" onclick="playMenuState.play()">
+            <input type="button" name="startGame" value="Start" onclick="playMenuState.play()">
         </div>
     </form>
     </div>
-    
-    <!-- Player Editing Menu 
-    <div class="formCont" id="playerForm">
-    <form id="player">
-        <h1>Edit Team</h1>
-        
-        <select id="players" size="8" style="width:215px;float:left;"></select>
-        
-        <div style="float:left;">
-            <input type="text" name="playerName" value="Team Name" size="25" maxlength="50" style="float:left;">
-
-            <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
-                style="width:50px;height:50px;float:left;">
-        
-            <input type="button" name="submit" value="Submit" onclick="playMenuState.makePlayer()">
-        
-            <input type="button" name="submit" value="Back" onclick="playMenuState.play()">
-        </div>
-    </form>
-    </div> -->
     
     <!-- PlayState menus -->
     <div class="formCont" id="pMenu">

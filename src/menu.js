@@ -21,7 +21,8 @@ var menuState = {
         }
         
         //game builder label
-        var editorText = game.add.text( game.world.centerX, game.world.centerY - 30, 'Game Editor', font );
+        var editorText = game.add.text( game.world.centerX, game.world.centerY - 30,
+                'Game Editor', font );
 
         editorText.anchor.setTo(0.5, 0.5);
         
@@ -36,7 +37,8 @@ var menuState = {
         editorText.events.onInputDown.add( make, this );
         
         //play label
-        var playText = game.add.text( game.world.centerX, game.world.centerY + 20, 'Play', font );
+        var playText = game.add.text( game.world.centerX, game.world.centerY + 20,
+                'Play', font );
 
         playText.anchor.setTo(0.5, 0.5);
         
@@ -49,7 +51,8 @@ var menuState = {
         playText.events.onInputDown.add( play, this );
         
         //help label
-        var helpText = game.add.text( game.world.centerX, game.world.centerY + 70, 'Help', font );
+        var helpText = game.add.text( game.world.centerX, game.world.centerY + 70,
+                'Help', font );
 
         helpText.anchor.setTo(0.5, 0.5);
         
@@ -66,7 +69,8 @@ var menuState = {
         helpText.events.onInputDown.add( helpUp, this );
         
         //about label
-        var aboutText = game.add.text( game.world.centerX, game.world.centerY + 120, 'About', font );
+        var aboutText = game.add.text( game.world.centerX, game.world.centerY + 120,
+                'About', font );
 
         aboutText.anchor.setTo(0.5, 0.5);
         

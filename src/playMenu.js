@@ -87,6 +87,11 @@ var playMenuState = {
     playerMenu: function () {
         document.getElementById( 'playerForm' ).style.display = 'flex';
         document.getElementById( 'player' ).elements['playerName'].select();
+        
+        var select = document.getElementById( 'players' );
+        
+        select.addEventListener( "keydown", playMenuState.viewEditPlayer );
+        select.addEventListener( "click", playMenuState.viewEditPlayer );
     },
     
     //Create player from user input, display error message if it is invalid
@@ -108,7 +113,6 @@ var playMenuState = {
         //Validate name
         if ( name.value.length == 0 || checkUnique ) {
             name.value = 'Invalid player name';
-            console.log( 'Invalid player name' );
         } else {
             var player = new Player( name.value, color );
             currPlayers.push( player );
@@ -116,8 +120,135 @@ var playMenuState = {
             name.value = '';
             name.focus();
             
-            this.updatePlayers();
+            playMenuState.updatePlayers();
         }
+    },
+    
+    //Modify a player
+    viewEditPlayer: function () {
+        function setView () {
+            var playerHeader = document.getElementById( 'playerHeader' );
+            var playerCont = document.getElementById( 'playerCont' );
+            var form = document.getElementById( 'player' );
+            var nameField = form.elements['playerName'];
+            var selected = form.elements['players'].value;
+            var color = form.elements['colors'];
+            var addBtn = form.elements['addPlayer'];
+            var startBtn = form.elements['startGame'];
+            var index = 0;
+            
+            playerHeader.innerHTML = 'Edit Team';
+            nameField.value = selected;
+            
+            for ( var i = 0; i < currPlayers.length; i++ ) {
+                if ( currPlayers[i].name == selected ) {
+                    index = i;
+                    break;
+                }
+            }
+            
+            color.value = currPlayers[index].avatar;
+            
+            addBtn.value = 'Update';
+            startBtn.value = 'Delete';
+            
+            addBtn.removeAttribute('onclick');
+            addBtn.addEventListener( 'click', playMenuState.changePlayer );
+            startBtn.removeAttribute('onclick');
+            startBtn.addEventListener( 'click', playMenuState.deletePlayer );
+            
+            if ( !( form.elements['returnPlayer'] ) ) {
+                var btnData = '<input type=\"button\" name=\"returnPlayer\"' +
+                        'value=\"Return\" onclick=\"playMenuState.returnPlayer()\">';
+                playerCont.innerHTML += btnData;
+            }
+        }
+        
+        //To make sure the selected value has been updated
+        //Not an optimal solution...
+        setTimeout( setView, 10 );
+    },
+    
+    //Modify a player
+    changePlayer: function () {
+        var form = document.getElementById( 'player' );
+        var name = form.elements['playerName'].value;
+        var color = form.elements['colors'].value;
+        var selected = form.elements['players'].value;
+        var index = 0;
+
+        for ( var i = 0; i < currPlayers.length; i++ ) {
+            if ( currPlayers[i].name == selected ) {
+                index = i;
+                break;
+            }
+        }
+        
+        name = name.trim();
+        
+        //Check if player already exists
+        var checkUnique = false;
+        
+        for ( var i = 0; i < currPlayers.length; i++ ) {
+            if ( ( currPlayers[i].name == name ) && ( i != index ) ) {
+                checkUnique = true;
+            }
+        }
+        
+        //Validate name
+        if ( name.length == 0 || checkUnique ) {
+            name = 'Invalid player name';
+        } else {
+            currPlayers[index].avatar = color;
+            currPlayers[index].name = name;
+            
+            playMenuState.updatePlayers();
+            playMenuState.returnPlayer();
+        }
+    },
+    
+    //Modify a player
+    deletePlayer: function ( name ) {
+        var form = document.getElementById( 'player' );
+        var selected = form.elements['players'].value;
+        
+        for ( var i = 0; i < currPlayers.length; i++ ) {
+            if ( currPlayers[i].name == selected ) {
+                currPlayers.splice( i, 1 );
+                break;
+            }
+        }
+        
+        playMenuState.updatePlayers();
+        playMenuState.returnPlayer();
+    },
+    
+    //Change player creation menu to create teams mode
+    returnPlayer: function ( name ) {
+        var playerHeader = document.getElementById( 'playerHeader' );
+        var playerCont = document.getElementById( 'playerCont' );
+        var form = document.getElementById( 'player' );
+        var nameField = form.elements['playerName'];
+        var color = form.elements['colors'];
+        var addBtn = form.elements['addPlayer'];
+        var startBtn = form.elements['startGame'];
+        var index = 0;
+        
+        playerHeader.innerHTML = 'Create Team';
+        nameField.value = 'Team Name';
+        color.value = '#FF0000';
+        
+        addBtn.value = 'Add';
+        startBtn.value = 'Start';
+        
+        addBtn.removeAttribute('onclick');
+        addBtn.addEventListener( 'click', playMenuState.makePlayer );
+        startBtn.removeAttribute('onclick');
+        startBtn.addEventListener( 'click', playMenuState.play );
+        
+        //doesn't work, needs NODE type
+        var returnBtn = form.elements['returnPlayer'];
+        playerCont.removeChild(returnBtn);
     },
     
     //Update players list in player creation menu,
@@ -128,7 +259,8 @@ var playMenuState = {
         select.innerHTML = '';
         
         for ( var i = 0; i < currPlayers.length; i++ ) {
-            select.innerHTML = select.innerHTML + '<option>' + currPlayers[i].name + '</option>';
+            select.innerHTML = select.innerHTML + '<option ' +
+                ' >' + currPlayers[i].name + '</option>';
         }
     },
     

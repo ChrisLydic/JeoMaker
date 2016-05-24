@@ -372,7 +372,8 @@ RectButton.prototype.constructor = RectButton;
 
 //Check if the mouse is hovering
 RectButton.prototype.isOver = function () {
-    if ( this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && !this.isIn ) {
+    if ( this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) &&
+            !this.isIn ) {
         this.draw( 0xFFFFFF, 0.1 );
         
         var ticksIn = 0;
@@ -412,7 +413,8 @@ RectButton.prototype.isOver = function () {
 
         this.isIn = true;
         
-    } else if ( !this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) && this.isIn ) {
+    } else if ( !this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) &&
+            this.isIn ) {
         this.draw( this.color, 1 );
         this.isIn = false;
         
