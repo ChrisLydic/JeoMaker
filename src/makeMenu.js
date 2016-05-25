@@ -105,7 +105,8 @@ var makeMenuState = {
         select.innerHTML = '';
         
         for ( var i = 0; i < this.storage.length; i++ ) {
-            select.innerHTML = select.innerHTML + '<option>' + this.storage[i] + '</option>';
+            select.innerHTML = select.innerHTML + '<option>' + this.storage[i] +
+                    '</option>';
         }
         
         select.innerHTML = select.innerHTML + '<option>New</option>';
@@ -130,13 +131,20 @@ var makeMenuState = {
     
     //Gets the name for a new Jeo board, opens the next menu
     inputName: function () {
-        var form = document.getElementById( 'name' );
+        var form = document.getElementById( 'name' ).elements['nameText'];
         
-        this.name = form.elements['nameText'].value;
+        this.name = form.value;
         
-        document.getElementById( 'nameForm' ).style.display = 'none';
+        this.name = this.name.trim();
         
-        this.gameMenu();
+        //Validation
+        if ( this.name.length == 0 ) {
+            form.value = 'Invalid game name';
+            form.focus();
+        } else {
+            document.getElementById( 'nameForm' ).style.display = 'none';
+            this.gameMenu();
+        }
     },
     
     //Creates a new Jeo board and makes it the current board

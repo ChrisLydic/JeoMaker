@@ -208,7 +208,7 @@ var playState = {
         //Setup
         var numPlayers;
         var playerWidths;
-        console.log(width);
+        
         //Calculate number of players to draw
         playerWidths = this.countPlayers( width, offset );
         numPlayers = playerWidths.length;
