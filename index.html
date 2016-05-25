@@ -37,15 +37,15 @@
     <!-- Input forms -->
     <div class="formCont" id="topicForm">
     <form id="topic">
-        <input type="text" name="topicText" value="Enter the topic" size="25" maxlength="50">
+        <input type="text" name="topicText" placeholder="Enter the topic" size="25" maxlength="50">
         <input class="break" type="button" name="submit" value="Submit" onclick="makeState.getInput('topic')">
     </form>
     </div>
     
     <div class="formCont" id="aqForm">
     <form id="aq">
-        <textarea name="answer" rows="5" cols="30">Type answer here</textarea>
-        <textarea class="break" name="question" rows="5" cols="30">Type question here</textarea>
+        <textarea name="answer" placeholder="Type answer here" rows="5" cols="30"></textarea>
+        <textarea class="break" placeholder="Type question here" name="question" rows="5" cols="30"></textarea>
         <input class="break" type="button" name="submit" value="Submit" onclick="makeState.getInput('aq')">
     </form>
     </div>
@@ -85,7 +85,7 @@
     <!-- Naming Menu -->
     <div class="formCont" id="nameForm">
     <form id="name">
-        <input type="text" name="nameText" value="Enter the game's name" size="25" maxlength="50">
+        <input type="text" name="nameText" placeholder="Enter the game's name" size="25" maxlength="50">
         <input class="break" type="button" name="submit" value="Submit" onclick="makeMenuState.inputName()">
     </form>
     </div>
@@ -120,7 +120,7 @@
         <select id="players" size="8" style="width:215px;float:left;"></select>
         
         <div id="playerCont" style="float:left;">
-            <input type="text" name="playerName" value="Team Name" size="25" maxlength="50" style="float:left;">
+            <input type="text" name="playerName" placeholder="Team Name" size="25" maxlength="50" style="float:left;">
 
             <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
                 style="width:50px;height:50px;float:left;">

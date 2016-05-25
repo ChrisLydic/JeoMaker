@@ -374,7 +374,7 @@ RectButton.prototype.constructor = RectButton;
 RectButton.prototype.isOver = function () {
     if ( this.btn.contains( game.input.mousePointer.x, game.input.mousePointer.y ) &&
             !this.isIn ) {
-        this.draw( 0xFFFFFF, 0.1 );
+        this.draw( 0xFFFFFF, 0.2 );
         
         var ticksIn = 0;
         var ctxIn = this;

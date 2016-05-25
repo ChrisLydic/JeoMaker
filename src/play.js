@@ -526,6 +526,174 @@ var playState = {
                 BLUE, partial( playState.qAnswered, x, y ) ) );
     },
     
+    //Opens the answer for a specific button, where the answer is displayed
+    //   along with teams and a couple navigation buttons
+    //Remember that Jeopardy begins with the answer and then reveals
+    //   the question
+    showFinal: function () {
+        game.world.removeAll();
+        game.input.onDown.removeAll();
+        
+        playState.buttons = [];
+        
+        layers = {
+            bgLayer: playState.add.group(),
+            btnLayer: playState.add.group(),
+            textLayer: playState.add.group()
+        };
+        
+        //Get text height
+        var teamPad = 25;
+        var teamHeight = 50;
+        var teamSpace = teamPad;
+        if ( playState.oneLineFit( w, 0 ) ) {
+            teamSpace += teamHeight + teamPad;
+        } else {
+            var offs = 0;
+            var teamWidths;
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                teamWidths = playState.countTeams( w, offs );
+                offs += teamWidths.length;
+                teamSpace += teamHeight + teamPad;
+            }
+            
+            teamWidths = playState.countTeams( w, offs );
+            teamSpace += teamHeight + teamPad;
+        }
+        
+        //Draw answer
+        var text = playState.currRound.board[x][y].a;
+
+        styles = {
+            font: '28px Arial',
+            fill: LABEL_WHITE,
+            align: 'center',
+            wordWrap: true,
+            wordWrapWidth: w - 100,
+            wordWrapHeight: h - ( 150 + teamSpace ),
+        };
+        
+        var label1 = game.add.text( w / 2, 50, text, styles );
+        label1.anchor.setTo( 0.5, 0 );
+        layers.textLayer.add( label1 );
+        
+        //Add teams
+        if ( playState.oneLineFit( w, 0 ) ) {
+            var teamWidthsArr = playState.countTeams( w, 0 );
+            var teamWidths = 0;
+            
+            //Get width the teams will take up
+            for ( var i = 0; i < teamWidthsArr.length; i++ ){
+                teamWidths += teamWidthsArr[i];
+            }
+            
+            //Account for extra padding at the end
+            teamWidths -= 30;
+            
+            var teamX = ( w - teamWidths ) / 2;
+            var teamY = h - ( teamSpace + 100 );
+            
+            var value = playState.currRound.money[x % 5];
+            
+            playState.makeTeams( teamX, teamY, teamWidths += 30, 0, value );
+        } else {
+            var offs = 0;
+            var teamX = 10;
+            var teamY = h - ( teamSpace + 100 );
+            
+            var value = playState.currRound.money[x % 5];
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                playState.makeTeams( teamX, teamY, w, offs, value );
+                
+                var teamWidths = playState.countTeams( w, offs );
+                offs += teamWidths.length;
+                
+                teamY += teamHeight + teamPad;
+            }
+            
+            playState.makeTeams( teamX, teamY, w, offs, value );
+            
+        }
+        
+        //Button setup
+        var pad = 50;
+        var btnWidth = 200;
+        var btnHeight = 50;
+        var halfWidth = w / 2;
+        var posX = 0;
+        var posY = h - ( btnHeight + pad );
+        var posYLabel = posY + ( btnHeight / 2 );
+        var barStyles = {
+            font: '30px Arial',
+            fill: LABEL_WHITE
+        };
+        
+        //Exit button
+        posX = halfWidth - ( pad + btnWidth );
+                
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, playState.rebuild ) );
+        
+        //Exit label
+        posX += btnWidth / 2;
+        
+        var label2 = game.add.text( posX, posYLabel, 'Back', barStyles );
+        
+        label2.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label2 );
+        
+        //Question Button
+        posX = halfWidth + pad;
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, partial( playState.showQuestion, x, y ) ) );
+        
+        //Question Label
+        posX += btnWidth / 2;
+        
+        var label3 = game.add.text( posX, posYLabel, 'Question', barStyles );
+        
+        label3.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label3 );
+    },
+    
+    //Edits the answer's text and buttons to display the question
+    //This happens when the question button is clicked in the answer mode
+    showFinalQuestion: function () {
+        //Change text
+        layers.textLayer.getChildAt(0).setText( playState.currRound.board[x][y].q );
+        layers.textLayer.getChildAt(2).setText( 'Finish' );
+        
+        //Remove buttons
+        for ( var i = 0; i < layers.btnLayer.children.length; i++ ) {
+            layers.btnLayer.children[i].destroy( true );
+        }
+        game.input.onDown.removeAll()
+        playState.buttons = [];
+        
+        //Button setup
+        var pad = 50;
+        var btnWidth = 200;
+        var btnHeight = 50;
+        var halfWidth = w / 2;
+        var posX = 0;
+        var posY = h - ( btnHeight + pad );
+        
+        //Back button
+        posX = halfWidth - ( pad + btnWidth );
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, partial( playState.showAnswer, x, y ) ) );
+        
+        //Finish button
+        posX = halfWidth + pad;
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, partial( playState.qAnswered, x, y ) ) );
+    },
+    
     //Opens the menu
     menu: function () {
         document.getElementById( 'pMenu' ).style.display = 'flex';

@@ -90,8 +90,9 @@ var playMenuState = {
         
         var select = document.getElementById( 'players' );
         
-        select.addEventListener( "keydown", playMenuState.viewEditPlayer );
-        select.addEventListener( "click", playMenuState.viewEditPlayer );
+        select.addEventListener( "change", playMenuState.viewEditPlayer );
+        //select.addEventListener( "keydown", playMenuState.viewEditPlayer );
+        
     },
     
     //Create player from user input, display error message if it is invalid
@@ -113,6 +114,7 @@ var playMenuState = {
         //Validate name
         if ( name.value.length == 0 || checkUnique ) {
             name.value = 'Invalid player name';
+            name.focus();
         } else {
             var player = new Player( name.value, color );
             currPlayers.push( player );
@@ -128,14 +130,19 @@ var playMenuState = {
     viewEditPlayer: function () {
         function setView () {
             var playerHeader = document.getElementById( 'playerHeader' );
-            var playerCont = document.getElementById( 'playerCont' );
             var form = document.getElementById( 'player' );
             var nameField = form.elements['playerName'];
             var selected = form.elements['players'].value;
             var color = form.elements['colors'];
-            var addBtn = form.elements['addPlayer'];
-            var startBtn = form.elements['startGame'];
             var index = 0;
+            
+            var oldAddBtn = form.elements['addPlayer'];
+            var newAddBtn = oldAddBtn.cloneNode(true);
+            oldAddBtn.parentNode.replaceChild(newAddBtn, oldAddBtn);
+            
+            var oldStartBtn = form.elements['startGame'];
+            var newStartBtn = oldStartBtn.cloneNode(true);
+            oldStartBtn.parentNode.replaceChild(newStartBtn, oldStartBtn);
             
             playerHeader.innerHTML = 'Edit Team';
             nameField.value = selected;
@@ -149,18 +156,22 @@ var playMenuState = {
             
             color.value = currPlayers[index].avatar;
             
-            addBtn.value = 'Update';
-            startBtn.value = 'Delete';
+            newAddBtn.value = 'Update';
+            newStartBtn.value = 'Delete';
             
-            addBtn.removeAttribute('onclick');
-            addBtn.addEventListener( 'click', playMenuState.changePlayer );
-            startBtn.removeAttribute('onclick');
-            startBtn.addEventListener( 'click', playMenuState.deletePlayer );
+            newAddBtn.removeAttribute('onclick');
+            newAddBtn.addEventListener( 'click', playMenuState.changePlayer );
+            newStartBtn.removeAttribute('onclick');
+            newStartBtn.addEventListener( 'click', playMenuState.deletePlayer );
             
             if ( !( form.elements['returnPlayer'] ) ) {
-                var btnData = '<input type=\"button\" name=\"returnPlayer\"' +
-                        'value=\"Return\" onclick=\"playMenuState.returnPlayer()\">';
-                playerCont.innerHTML += btnData;
+                var playerCont = document.getElementById( 'playerCont' );
+                var returnBtn = document.createElement("input");
+                returnBtn.type = 'button';
+                returnBtn.name = 'returnPlayer';  
+                returnBtn.value = 'Return';
+                returnBtn.addEventListener( 'click', playMenuState.returnPlayer );
+                playerCont.appendChild( returnBtn );
             }
         }
         
@@ -172,7 +183,8 @@ var playMenuState = {
     //Modify a player
     changePlayer: function () {
         var form = document.getElementById( 'player' );
-        var name = form.elements['playerName'].value;
+        var nameField = form.elements['playerName'];
+        var name = nameField.value;
         var color = form.elements['colors'].value;
         var selected = form.elements['players'].value;
         var index = 0;
@@ -197,7 +209,8 @@ var playMenuState = {
         
         //Validate name
         if ( name.length == 0 || checkUnique ) {
-            name = 'Invalid player name';
+            nameField.value = 'Invalid player name';
+            nameField.focus();
         } else {
             currPlayers[index].avatar = color;
             currPlayers[index].name = name;
@@ -208,10 +221,11 @@ var playMenuState = {
     },
     
     //Modify a player
-    deletePlayer: function ( name ) {
+    deletePlayer: function () {
         var form = document.getElementById( 'player' );
         var selected = form.elements['players'].value;
         
+        //Remove list item corresponding to player
         for ( var i = 0; i < currPlayers.length; i++ ) {
             if ( currPlayers[i].name == selected ) {
                 currPlayers.splice( i, 1 );
@@ -224,31 +238,39 @@ var playMenuState = {
     },
     
     //Change player creation menu to create teams mode
-    returnPlayer: function ( name ) {
+    returnPlayer: function () {
         var playerHeader = document.getElementById( 'playerHeader' );
         var playerCont = document.getElementById( 'playerCont' );
         var form = document.getElementById( 'player' );
         var nameField = form.elements['playerName'];
         var color = form.elements['colors'];
-        var addBtn = form.elements['addPlayer'];
-        var startBtn = form.elements['startGame'];
         var index = 0;
         
+        var oldAddBtn = form.elements['addPlayer'];
+        var newAddBtn = oldAddBtn.cloneNode( true );
+        oldAddBtn.parentNode.replaceChild( newAddBtn, oldAddBtn );
+        
+        var oldStartBtn = form.elements['startGame'];
+        var newStartBtn = oldStartBtn.cloneNode( true );
+        oldStartBtn.parentNode.replaceChild( newStartBtn, oldStartBtn );
+        
         playerHeader.innerHTML = 'Create Team';
-        nameField.value = 'Team Name';
+        nameField.value = '';
+        nameField.focus();
         color.value = '#FF0000';
         
-        addBtn.value = 'Add';
-        startBtn.value = 'Start';
+        newAddBtn.value = 'Add';
+        newStartBtn.value = 'Start';
         
-        addBtn.removeAttribute('onclick');
-        addBtn.addEventListener( 'click', playMenuState.makePlayer );
-        startBtn.removeAttribute('onclick');
-        startBtn.addEventListener( 'click', playMenuState.play );
-        
-        //doesn't work, needs NODE type
+        newAddBtn.removeAttribute( 'onclick' );
+        newAddBtn.addEventListener( 'click', playMenuState.makePlayer );
+        newStartBtn.removeAttribute( 'onclick' );
+        newStartBtn.addEventListener( 'click', playMenuState.play );
+
         var returnBtn = form.elements['returnPlayer'];
-        playerCont.removeChild(returnBtn);
+        if ( returnBtn ) {
+            playerCont.removeChild( returnBtn );
+        }
     },
     
     //Update players list in player creation menu,
@@ -262,6 +284,10 @@ var playMenuState = {
             select.innerHTML = select.innerHTML + '<option ' +
                 ' >' + currPlayers[i].name + '</option>';
         }
+        
+        // for ( var i = 0; i < select.childNodes.length; i++ ){
+        //     select.childNodes[i].addEventListener( "click", playMenuState.viewEditPlayer );
+        // }
     },
     
     //Change color selector's color (in player creation menu)
