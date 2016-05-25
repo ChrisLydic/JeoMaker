@@ -123,6 +123,7 @@ var makeMenuState = {
         
         if ( nameTemp === 'New' ) {
             document.getElementById( 'nameForm' ).style.display = 'flex';
+            document.getElementById( 'name' ).elements['nameText'].focus();
         } else {
             currBoard = unobjectify( JSON.parse( localStorage.getItem( nameTemp ) ) );
             this.makeStart();
@@ -138,7 +139,7 @@ var makeMenuState = {
         this.name = this.name.trim();
         
         //Validation
-        if ( this.name.length == 0 ) {
+        if ( this.name.length == 0 || this.name.toLowerCase() == 'new' ) {
             form.value = 'Invalid game name';
             form.focus();
         } else {
