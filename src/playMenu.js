@@ -1,5 +1,5 @@
 //playMenu.js
-//Menu where the game is selected and loaded, and where teams are created
+//Menu where the game is selected and loaded, and where Players are created
 var playMenuState = {
     
     //Stores all localStorage keys
@@ -36,12 +36,12 @@ var playMenuState = {
         
         if ( currPlayers.length > 1 ) {
             document.getElementById( 'players' ).innerHTML = '';
-            name.value = 'Team Name';
+            name.value = 'Player Name';
             document.getElementById( 'playerForm' ).style.display = 'none';
             game.state.start( 'play' );
         } else {
             name.value = 'Not enough players';
-            console.log( 'Not enough players' );
+            name.focus();
         }
     },
     
@@ -91,8 +91,6 @@ var playMenuState = {
         var select = document.getElementById( 'players' );
         
         select.addEventListener( "change", playMenuState.viewEditPlayer );
-        //select.addEventListener( "keydown", playMenuState.viewEditPlayer );
-        
     },
     
     //Create player from user input, display error message if it is invalid
@@ -144,7 +142,7 @@ var playMenuState = {
             var newStartBtn = oldStartBtn.cloneNode(true);
             oldStartBtn.parentNode.replaceChild(newStartBtn, oldStartBtn);
             
-            playerHeader.innerHTML = 'Edit Team';
+            playerHeader.innerHTML = 'Edit Player';
             nameField.value = selected;
             
             for ( var i = 0; i < currPlayers.length; i++ ) {
@@ -212,8 +210,7 @@ var playMenuState = {
             nameField.value = 'Invalid player name';
             nameField.focus();
         } else {
-            currPlayers[index].avatar = color;
-            currPlayers[index].name = name;
+            currPlayers[index].edit( name, color );
             
             playMenuState.updatePlayers();
             playMenuState.returnPlayer();
@@ -237,7 +234,7 @@ var playMenuState = {
         playMenuState.returnPlayer();
     },
     
-    //Change player creation menu to create teams mode
+    //Change player creation menu to create players mode
     returnPlayer: function () {
         var playerHeader = document.getElementById( 'playerHeader' );
         var playerCont = document.getElementById( 'playerCont' );
@@ -254,7 +251,7 @@ var playMenuState = {
         var newStartBtn = oldStartBtn.cloneNode( true );
         oldStartBtn.parentNode.replaceChild( newStartBtn, oldStartBtn );
         
-        playerHeader.innerHTML = 'Create Team';
+        playerHeader.innerHTML = 'Create Player';
         nameField.value = '';
         nameField.focus();
         color.value = '#FF0000';
@@ -284,10 +281,6 @@ var playMenuState = {
             select.innerHTML = select.innerHTML + '<option ' +
                 ' >' + currPlayers[i].name + '</option>';
         }
-        
-        // for ( var i = 0; i < select.childNodes.length; i++ ){
-        //     select.childNodes[i].addEventListener( "click", playMenuState.viewEditPlayer );
-        // }
     },
     
     //Change color selector's color (in player creation menu)

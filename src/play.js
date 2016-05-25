@@ -1,5 +1,5 @@
 //play.js
-//Runs the play version of the Jeo game, allows team point values to be changed
+//Runs the play version of the Jeo game, allows player point values to be changed
 //   and question/answers to be selected, displayed, and exited
 //Also provides access to menus for going to main menu and showing help info
 var playState = {
@@ -123,14 +123,14 @@ var playState = {
         var btnBarHeight = 50;
         var btnBarWidth = 200;
         var btnBarWidthSmall = 100;
-        var teamBtnWidth = 50;
+        var playerBtnWidth = 50;
         var barStyles = {
             font: '30px Arial',
             fill: LABEL_WHITE
         };
         
-        //Parameter for makeTeams()
-        var teamWidth = w;
+        //Parameter for makePlayers()
+        var playerWidth = w;
         
         //Draw menubar buttons
         if ( currBoard.isDouble ) {
@@ -149,7 +149,7 @@ var playState = {
             label3.anchor.setTo( 0.5, 0.5 );
             layers.textLayer.add( label3 );
             
-            teamWidth -= btnBarWidth + padBar;
+            playerWidth -= btnBarWidth + padBar;
         }
         
         //Final question button
@@ -182,84 +182,84 @@ var playState = {
         label1.anchor.setTo( 0.5, 0.5 );
         layers.textLayer.add( label1 );
         
-        teamWidth -= btnBarWidth + btnBarWidthSmall + ( 2 * padBar );
+        playerWidth -= btnBarWidth + btnBarWidthSmall + ( 2 * padBar );
         
-        var teamX = 10;
-        var teamY = h - 60;
+        var playerX = 10;
+        var playerY = h - 60;
         var baseCashAmount = 200;
         
-        //Makes the team data and buttons
-        //Dependent on whether or not teams can all fit in menu barStyle
-        //If not, a button controls which teams are currently shown
-        if ( this.oneLineFit( teamWidth, 0 ) ) {
-            this.makeTeams( teamX, teamY, teamWidth, 0, baseCashAmount );
+        //Makes the player data and buttons
+        //Dependent on whether or not players can all fit in menu barStyle
+        //If not, a button controls which players are currently shown
+        if ( this.oneLineFit( playerWidth, 0 ) ) {
+            this.makePlayers( playerX, playerY, playerWidth, 0, baseCashAmount );
         } else {
-            teamWidth -= padBar + teamBtnWidth;
-            this.makeTeams( teamX, teamY, teamWidth, this.offset, baseCashAmount );
-            
-            // var teamWidths = this.countTeams( teamWidth, this.offset );
-            // this.offset += teamWidths.length;
+            playerWidth -= padBar + playerBtnWidth;
+            this.makePlayers( playerX, playerY, playerWidth, this.offset, baseCashAmount );
         
-            teamX = teamWidth;
-            button1 = game.add.button( teamX, teamY, 'incrementTeams',
-                    partial( this.incTeams, teamWidth ), this, 1, 0 );
+            playerX = playerWidth;
+            button1 = game.add.button( playerX, playerY, 'incrementPlayers',
+                    partial( this.incPlayers, playerWidth ), this, 1, 0 );
         }
     },
     
-    //Draws a single row of teams using drawTeam()
-    makeTeams: function ( x, y, width, offset, amount ) {
+    //Draws a single row of players using drawPlayer()
+    makePlayers: function ( x, y, width, offset, amount ) {
         //Setup
-        var numTeams;
-        var teamWidths;
+        var numPlayers;
+        var playerWidths;
         
-        //Calculate number of teams to draw
-        teamWidths = this.countTeams( width, offset );
-        numTeams = teamWidths.length;
+        //Calculate number of players to draw
+        playerWidths = this.countPlayers( width, offset );
+        numPlayers = playerWidths.length;
         
-        //Draw teams in loop
-        for ( var index = offset; index < ( numTeams + offset ); index++ ) {
-            this.drawTeam( x, y, index, amount );
-            x += teamWidths[index - offset];
+        //Draw players in loop
+        //If this is for final jeopardy, validate wagers appropriately
+        if ( amount == 'finalQ' ) {
+            for ( var index = offset; index < ( numPlayers + offset ); index++ ) {
+                amount = parseInt( document.getElementById( currPlayers[index].name +
+                        String( index ) ).value );
+                        
+                if ( isNaN( amount ) ) {
+                    amount = 0;
+                } else if ( amount < 0 ) {
+                    amount = 0;
+                    console.log( 'Negative values are not allowed in final ' +
+                            'jeopardy wager' );
+                } else if ( amount > currPlayers[index].score ) {
+                    amount = currPlayers[index].score;
+                    
+                    if ( amount < 0 ) {
+                        amount = 0;
+                    }
+                    
+                    console.log( 'Values higher than your current score are not ' +
+                            'allowed in final jeopardy wager' );
+                }
+                
+                this.drawPlayer( x, y, index, amount );
+                x += playerWidths[index - offset];
+            }
+        } else {
+            for ( var index = offset; index < ( numPlayers + offset ); index++ ) {
+                this.drawPlayer( x, y, index, amount );
+                x += playerWidths[index - offset];
+            }
         }
         
-        return numTeams;
+        return numPlayers;
     },
     
-    //Draws a single team's info and buttons to adjust their score
+    //Draws a single player's info and buttons to adjust their score
     //The amount variable is the increment/decrement amount
-    drawTeam: function ( x, y, index, amount ) {
-        //setup
-        var graphics = game.add.graphics( 0, 0 );
-        
-        colorSize = 50;
-        pad = 5;
-        
-        nameStyles = {
-            font: '16px Arial',
-            fill: LABEL_WHITE,
-        };
-        scoreStyles = {
-            font: '34px Arial',
-            fill: LABEL_WHITE,
-        };
-        
-        //draw team color
-        //convert color given by html to format phaser recognizes
-        graphics.beginFill( Phaser.Color.hexToRGB( currPlayers[index].avatar ) );
-        graphics.drawRect( x, y, colorSize, colorSize );
-        graphics.endFill();
-        
-        //draw team name
-        x += colorSize + pad;
-        
-        var label1 = game.add.text( x, y, currPlayers[index].name, nameStyles );
-        
-        //draw team score
-        y += label1.height;
-        
-        //phaser won't display score when it is zero so '' is appended
-        //to convert it to a string beforehand
-        var label2 = game.add.text( x, y, '' + currPlayers[index].score, scoreStyles );
+    drawPlayer: function ( x, y, index, amount ) {
+        //draw player info
+        coords = this.drawPlayerScale( x, y, index, 1 );
+        x = coords[0];
+        y = coords[1];
+        var label1 = coords[2];
+        var label2 = coords[3];
+        var pad = coords[4];
         
         //make buttons
         if ( label1.width > MAX_SCORE_WIDTH ) {
@@ -283,73 +283,112 @@ var playState = {
         button2.label = label2;
     },
     
-    //Finds how many teams will fill one 'line' of space when drawn
-    //This allows handling of cases where the teams need multiple lines
-    //   of space to be displayed properly
-    countTeams: function ( width, offset ) {
-        var teamWidths = [];
-        var teamWidth;
-        var staticWidth = 85;
-        var teamPad = 30;
+    //Draws a single player's info
+    //Exists so that scaled player info can be drawn on leaderboard without buttons
+    drawPlayerScale: function ( x, y, index, scale ) {
+        //setup
+        var graphics = game.add.graphics( 0, 0 );
         
-        //Iterate over each team, finding the max possible width of each team's
+        var colorSize = ( 50 * scale );
+        var pad = ( 5 * scale );
+        
+        var nameStyles = {
+            font: String( 16 * scale ) + 'px Arial',
+            fill: LABEL_WHITE,
+        };
+        var scoreStyles = {
+            font: String( 34 * scale ) + 'px Arial',
+            fill: LABEL_WHITE,
+        };
+        
+        //draw player color
+        //convert color given by html to format phaser recognizes
+        graphics.beginFill( Phaser.Color.hexToRGB( currPlayers[index].avatar ) );
+        graphics.drawRect( x, y, colorSize, colorSize );
+        graphics.endFill();
+        
+        //draw player name
+        x += colorSize + pad;
+        
+        var label1 = game.add.text( x, y, currPlayers[index].name, nameStyles );
+        
+        //draw player score
+        y += label1.height;
+        
+        var label2 = game.add.text( x, y, String( currPlayers[index].score ),
+                scoreStyles );
+        
+        //for drawPlayer()
+        return [x, y, label1, label2, pad];
+    },
+    
+    //Finds how many players will fill one 'line' of space when drawn
+    //This allows handling of cases where the players need multiple lines
+    //   of space to be displayed properly
+    countPlayers: function ( width, offset ) {
+        var playerWidths = [];
+        var playerWidth;
+        var staticWidth = 85;
+        var playerPad = 30;
+        
+        //Iterate over each player, finding the max possible width of each player's
         //   display information, and store each line's width
         for ( var count = offset; count < currPlayers.length; count++ ) {
-            teamWidth = staticWidth + teamPad;
+            playerWidth = staticWidth + playerPad;
             
             var label = game.add.text( w, h, currPlayers[count].name,
                     { font: '16px Arial' } );
             
             //Max width is defined by the MAX_SCORE_WIDTH or the width of the
-            //   team's name, whichever is larger
+            //   player's name, whichever is larger
             if ( label.width > MAX_SCORE_WIDTH ) {
-                teamWidth += label.width;
+                playerWidth += label.width;
             } else {
-                teamWidth += MAX_SCORE_WIDTH;
+                playerWidth += MAX_SCORE_WIDTH;
             }
             
             label.destroy();
             
-            if ( ( width -= teamWidth ) >= 0 ) {
-                teamWidths.push( teamWidth );
+            if ( ( width -= playerWidth ) >= 0 ) {
+                playerWidths.push( playerWidth );
             } else {
                 break;
             }
         }
         
-        return teamWidths;
+        return playerWidths;
     },
     
-    //Checks if a list of teams is going to fit on a single 'line' of space
-    //   using countTeams()
+    //Checks if a list of players is going to fit on a single 'line' of space
+    //   using countPlayers()
     oneLineFit: function ( width, offset ) {
-        var teams = this.countTeams( width, offset );
+        var players = this.countPlayers( width, offset );
         
-        //If the number of players is equal to the length of teams,
+        //If the number of players is equal to the length of players,
         //   they can all fit on a single line
-        if ( ( currPlayers.length - offset ) == teams.length ) {
+        if ( ( currPlayers.length - offset ) == players.length ) {
             return true;
         } else {
             return false;
         }
     },
     
-    //For team scores, increments by set amount
+    //For player scores, increments by set amount
     incText: function ( button ) {
         currPlayers[button.index].setScore( button.amount );
         button.label.setText( '' + currPlayers[button.index].score );
     },
     
-    //For team scores, decrements by set amount
+    //For player scores, decrements by set amount
     decText: function ( button ) {
         currPlayers[button.index].setScore( -(button.amount) );
         button.label.setText( '' + currPlayers[button.index].score );
     },
     
-    //Change teams currently shown in menu bar
-    incTeams: function ( teamWidth ) {
-        var teamWidths = playState.countTeams( teamWidth, this.offset );
-        this.offset += teamWidths.length;
+    //Change players currently shown in menu bar
+    incPlayers: function ( playerWidth ) {
+        var playerWidths = playState.countPlayers( playerWidth, this.offset );
+        this.offset += playerWidths.length;
         
         if ( this.offset == currPlayers.length ) {
             this.offset = 0;
@@ -359,7 +398,7 @@ var playState = {
     },
     
     //Opens the answer for a specific button, where the answer is displayed
-    //   along with teams and a couple navigation buttons
+    //   along with players and a couple navigation buttons
     //Remember that Jeopardy begins with the answer and then reveals
     //   the question
     showAnswer: function ( x, y ) {
@@ -375,23 +414,24 @@ var playState = {
         };
         
         //Get text height
-        var teamPad = 25;
-        var teamHeight = 50;
-        var teamSpace = teamPad;
+        var playerPad = 25;
+        var playerHeight = 50;
+        var playerSpace = playerPad;
+        
         if ( playState.oneLineFit( w, 0 ) ) {
-            teamSpace += teamHeight + teamPad;
+            playerSpace += playerHeight + playerPad;
         } else {
             var offs = 0;
-            var teamWidths;
+            var playerWidths;
             
             while ( !( playState.oneLineFit( w, offs ) ) ) {
-                teamWidths = playState.countTeams( w, offs );
-                offs += teamWidths.length;
-                teamSpace += teamHeight + teamPad;
+                playerWidths = playState.countPlayers( w, offs );
+                offs += playerWidths.length;
+                playerSpace += playerHeight + playerPad;
             }
             
-            teamWidths = playState.countTeams( w, offs );
-            teamSpace += teamHeight + teamPad;
+            playerWidths = playState.countPlayers( w, offs );
+            playerSpace += playerHeight + playerPad;
         }
         
         //Draw answer
@@ -403,51 +443,17 @@ var playState = {
             align: 'center',
             wordWrap: true,
             wordWrapWidth: w - 100,
-            wordWrapHeight: h - ( 150 + teamSpace ),
+            wordWrapHeight: h - ( 150 + playerSpace ),
         };
         
         var label1 = game.add.text( w / 2, 50, text, styles );
         label1.anchor.setTo( 0.5, 0 );
         layers.textLayer.add( label1 );
         
-        //Add teams
-        if ( playState.oneLineFit( w, 0 ) ) {
-            var teamWidthsArr = playState.countTeams( w, 0 );
-            var teamWidths = 0;
-            
-            //Get width the teams will take up
-            for ( var i = 0; i < teamWidthsArr.length; i++ ){
-                teamWidths += teamWidthsArr[i];
-            }
-            
-            //Account for extra padding at the end
-            teamWidths -= 30;
-            
-            var teamX = ( w - teamWidths ) / 2;
-            var teamY = h - ( teamSpace + 100 );
-            
-            var value = playState.currRound.money[x % 5];
-            
-            playState.makeTeams( teamX, teamY, teamWidths += 30, 0, value );
-        } else {
-            var offs = 0;
-            var teamX = 10;
-            var teamY = h - ( teamSpace + 100 );
-            
-            var value = playState.currRound.money[x % 5];
-            
-            while ( !( playState.oneLineFit( w, offs ) ) ) {
-                playState.makeTeams( teamX, teamY, w, offs, value );
-                
-                var teamWidths = playState.countTeams( w, offs );
-                offs += teamWidths.length;
-                
-                teamY += teamHeight + teamPad;
-            }
-            
-            playState.makeTeams( teamX, teamY, w, offs, value );
-            
-        }
+        //Add players
+        var value = playState.currRound.money[x % 5];
+        var offset = 0;
+        playState.makePlayersAQ( value, playerSpace, offset );
         
         //Button setup
         var pad = 50;
@@ -526,10 +532,9 @@ var playState = {
                 BLUE, partial( playState.qAnswered, x, y ) ) );
     },
     
-    //Opens the answer for a specific button, where the answer is displayed
-    //   along with teams and a couple navigation buttons
-    //Remember that Jeopardy begins with the answer and then reveals
-    //   the question
+    //Opens the final answer, where the answer is displayed along with text input
+    //   for wagering amounts and a couple navigation buttons
+    //Final jeopardy has players wager some amount of their winnings
     showFinal: function () {
         game.world.removeAll();
         game.input.onDown.removeAll();
@@ -541,81 +546,6 @@ var playState = {
             btnLayer: playState.add.group(),
             textLayer: playState.add.group()
         };
-        
-        //Get text height
-        var teamPad = 25;
-        var teamHeight = 50;
-        var teamSpace = teamPad;
-        if ( playState.oneLineFit( w, 0 ) ) {
-            teamSpace += teamHeight + teamPad;
-        } else {
-            var offs = 0;
-            var teamWidths;
-            
-            while ( !( playState.oneLineFit( w, offs ) ) ) {
-                teamWidths = playState.countTeams( w, offs );
-                offs += teamWidths.length;
-                teamSpace += teamHeight + teamPad;
-            }
-            
-            teamWidths = playState.countTeams( w, offs );
-            teamSpace += teamHeight + teamPad;
-        }
-        
-        //Draw answer
-        var text = playState.currRound.board[x][y].a;
-
-        styles = {
-            font: '28px Arial',
-            fill: LABEL_WHITE,
-            align: 'center',
-            wordWrap: true,
-            wordWrapWidth: w - 100,
-            wordWrapHeight: h - ( 150 + teamSpace ),
-        };
-        
-        var label1 = game.add.text( w / 2, 50, text, styles );
-        label1.anchor.setTo( 0.5, 0 );
-        layers.textLayer.add( label1 );
-        
-        //Add teams
-        if ( playState.oneLineFit( w, 0 ) ) {
-            var teamWidthsArr = playState.countTeams( w, 0 );
-            var teamWidths = 0;
-            
-            //Get width the teams will take up
-            for ( var i = 0; i < teamWidthsArr.length; i++ ){
-                teamWidths += teamWidthsArr[i];
-            }
-            
-            //Account for extra padding at the end
-            teamWidths -= 30;
-            
-            var teamX = ( w - teamWidths ) / 2;
-            var teamY = h - ( teamSpace + 100 );
-            
-            var value = playState.currRound.money[x % 5];
-            
-            playState.makeTeams( teamX, teamY, teamWidths += 30, 0, value );
-        } else {
-            var offs = 0;
-            var teamX = 10;
-            var teamY = h - ( teamSpace + 100 );
-            
-            var value = playState.currRound.money[x % 5];
-            
-            while ( !( playState.oneLineFit( w, offs ) ) ) {
-                playState.makeTeams( teamX, teamY, w, offs, value );
-                
-                var teamWidths = playState.countTeams( w, offs );
-                offs += teamWidths.length;
-                
-                teamY += teamHeight + teamPad;
-            }
-            
-            playState.makeTeams( teamX, teamY, w, offs, value );
-            
-        }
         
         //Button setup
         var pad = 50;
@@ -630,11 +560,72 @@ var playState = {
             fill: LABEL_WHITE
         };
         
+        //Create player wagering form
+        var form = document.getElementById( 'finalForm' );
+        var playerDiv = document.getElementById( 'finalPlayers' );
+        var btnSpace = btnHeight + ( 2 * pad );
+        var playerPercent = ( h - btnSpace ) / h;
+        
+        playerDiv.innerHTML = '';
+        playerDiv.style.width = w;
+        
+        for ( var i = 0; i < currPlayers.length; i++ ) {
+            var tempDiv = document.createElement( 'div' );
+            var tempP = document.createElement( 'p' );
+            var tempText = document.createElement( 'input' );
+            
+            tempP.style.lineHeight = '0em';
+            tempP.style.paddingRight = '5px';
+            tempP.innerHTML = currPlayers[i].name + ':';
+            tempP.style.fontSize = '2em';
+            
+            tempText.type = 'text';
+            tempText.placeholder = String( currPlayers[i].score );
+            tempText.size = 6;
+            tempText.maxLength = 10;
+            tempText.style.fontSize = '2em';
+            
+            //Generate an identifier for each text input, so the data can be
+            //   retrieved in showFinalQuestion()
+            tempText.id = currPlayers[i].name + String( i );
+            
+            tempDiv.appendChild( tempP );
+            tempDiv.appendChild( tempText );
+            tempDiv.style.margin = '20px';
+            tempDiv.style.height = '3em';
+            tempDiv.style.cssFloat = 'left';
+            
+            playerDiv.appendChild( tempDiv );
+        }
+        
+        form.style.display = 'flex';
+        form.style.height = String( playerPercent * 100 ) + '%';
+        
+        var playerHeight = playerDiv.offsetHeight;
+        var playerSpace = h - ( playerHeight + btnSpace );
+        playerDiv.style.marginTop = String( playerSpace ) + 'px';
+        
+        //Draw answer
+        var text = currBoard.finalQ.a;
+
+        styles = {
+            font: '28px Arial',
+            fill: LABEL_WHITE,
+            align: 'center',
+            wordWrap: true,
+            wordWrapWidth: w - 100,
+            wordWrapHeight: h - ( btnSpace + playerHeight ),
+        };
+        
+        var label1 = game.add.text( w / 2, 50, text, styles );
+        label1.anchor.setTo( 0.5, 0 );
+        layers.textLayer.add( label1 );
+        
         //Exit button
         posX = halfWidth - ( pad + btnWidth );
                 
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, playState.rebuild ) );
+                BLUE, playState.rebuildFinal ) );
         
         //Exit label
         posX += btnWidth / 2;
@@ -648,7 +639,7 @@ var playState = {
         posX = halfWidth + pad;
         
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, partial( playState.showQuestion, x, y ) ) );
+                BLUE, playState.showFinalQuestion ) );
         
         //Question Label
         posX += btnWidth / 2;
@@ -659,11 +650,14 @@ var playState = {
         layers.textLayer.add( label3 );
     },
     
-    //Edits the answer's text and buttons to display the question
+    //Edits the final answer's text and buttons to display the final question
     //This happens when the question button is clicked in the answer mode
     showFinalQuestion: function () {
+        //Hide the form for player wagers
+        document.getElementById( 'finalForm' ).style.display = 'none';
+        
         //Change text
-        layers.textLayer.getChildAt(0).setText( playState.currRound.board[x][y].q );
+        layers.textLayer.getChildAt(0).setText( currBoard.finalQ.q );
         layers.textLayer.getChildAt(2).setText( 'Finish' );
         
         //Remove buttons
@@ -685,13 +679,152 @@ var playState = {
         posX = halfWidth - ( pad + btnWidth );
         
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, partial( playState.showAnswer, x, y ) ) );
+                BLUE, playState.showFinal ) );
         
         //Finish button
         posX = halfWidth + pad;
         
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
-                BLUE, partial( playState.qAnswered, x, y ) ) );
+                BLUE, playState.leaderboard ) );
+                
+        //Get text height
+        var playerPad = 25;
+        var playerHeight = 50;
+        var playerSpace = playerPad;
+        
+        if ( playState.oneLineFit( w, 0 ) ) {
+            playerSpace += playerHeight + playerPad;
+        } else {
+            var offs = 0;
+            var playerWidths;
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                playerWidths = playState.countPlayers( w, offs );
+                offs += playerWidths.length;
+                playerSpace += playerHeight + playerPad;
+            }
+            
+            playerWidths = playState.countPlayers( w, offs );
+            playerSpace += playerHeight + playerPad;
+        }
+        
+        //Add players
+        var offset = 0;
+        playState.makePlayersAQ( 'finalQ', playerSpace, offset );
+    },
+    
+    //When final jeopardy is over, shows the results
+    leaderboard: function () {
+        game.world.removeAll();
+        game.input.onDown.removeAll();
+        
+        playState.buttons = [];
+        
+        layers = {
+            bgLayer: playState.add.group(),
+            btnLayer: playState.add.group(),
+            textLayer: playState.add.group()
+        };
+        
+        //Button setup
+        var pad = 50;
+        var btnWidth = 200;
+        var btnHeight = 50;
+        var halfWidth = w / 2;
+        var posX = 0;
+        var posY = h - ( btnHeight + pad );
+        
+        //Back button
+        posX = halfWidth - ( pad + btnWidth );
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, playState.rebuild ) );
+        
+        //Finish button
+        posX = halfWidth + pad;
+        
+        playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
+                BLUE, playState.startMenu ) );
+        
+        var scale = 4;
+        var playerWidths = playState.countPlayers( w, 0 );
+        var winnerWidth = ( scale / 2 ) * playerWidths[0]; //actually 1/2 width
+        var x = w/2;
+        var y = 70;
+        
+        var style = {
+            font: '30px Arial',
+            fill: LABEL_WHITE
+        };
+        var label3 = game.add.text( x, y, 'Leaderboard', style );
+        label3.anchor.setTo(0.5, 0.5);
+        
+        y *= 2;
+        x -= winnerWidth;
+        
+        currPlayers.sort( playerSort );
+        
+        var playerPad = 25;
+        var playerHeight = 50;
+        var playerSpace = playerPad;
+        
+        var index = 0;
+        playState.drawPlayerScale( x, y, index, scale );
+        
+        index++;
+        
+        if ( playState.oneLineFit( w, index ) ) {
+            playerSpace += playerHeight + playerPad;
+        } else {
+            var offs = index;
+            var playerWidths;
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                playerWidths = playState.countPlayers( w, offs );
+                offs += playerWidths.length;
+                playerSpace += playerHeight + playerPad;
+            }
+            
+            playerWidths = playState.countPlayers( w, offs );
+            playerSpace += playerHeight + playerPad;
+        }
+        
+        playState.makePlayersAQ( 'leaderboard', playerSpace, index );
+    },
+    
+    //Handles drawing players for answers, questions, final jeopardy, and leaderboard
+    makePlayersAQ: function ( value, playerSpace, offs ) {
+        if ( playState.oneLineFit( w, offs ) ) {
+            var playerWidthsArr = playState.countPlayers( w, offs );
+            var playerWidths = offs;
+            
+            //Get width the players will take up
+            for ( var i = offs; i < playerWidthsArr.length; i++ ){
+                playerWidths += playerWidthsArr[i];
+            }
+            
+            //Account for extra padding at the end
+            playerWidths -= 30;
+            
+            var playerX = ( w - playerWidths ) / 2;
+            var playerY = h - ( playerSpace + 100 );
+            
+            playState.makePlayers( playerX, playerY, playerWidths += 30, offs, value );
+        } else {
+            var playerX = 10;
+            var playerY = h - ( playerSpace + 100 );
+            
+            while ( !( playState.oneLineFit( w, offs ) ) ) {
+                playState.makePlayers( playerX, playerY, w, offs, value );
+                
+                var playerWidths = playState.countPlayers( w, offs );
+                offs += playerWidths.length;
+                
+                playerY += playerHeight + playerPad;
+            }
+            
+            playState.makePlayers( playerX, playerY, w, offs, value );
+        }
     },
     
     //Opens the menu
@@ -705,7 +838,7 @@ var playState = {
         switch( cmd ) {
             case this.Opt.MAIN:
                 document.getElementById( 'pMenu' ).style.display = 'none';
-                game.state.start( 'menu' );
+                playState.startMenu();
                 break;
             case this.Opt.HELP:
                 document.getElementById( 'pMenu' ).style.display = 'none';
@@ -718,6 +851,11 @@ var playState = {
             default:
                 break;
         }
+    },
+    
+    //Go to main menu
+    startMenu: function () {
+        game.state.start( 'menu' );
     },
     
     //Switch between normal and double jeopardy boards
@@ -733,9 +871,15 @@ var playState = {
         }
     },
     
-    //Clear the display and rebuild it
+    //Clear the display and rebuild it while recording that a AQ was viewed
     qAnswered: function ( x, y ) {
         playState.currRound.board[x][y].updateAnswer( true );
+        playState.rebuild();
+    },
+    
+    //Hide player html for the final answer and rebuild
+    rebuildFinal: function () {
+        document.getElementById( 'finalForm' ).style.display = 'none';
         playState.rebuild();
     },
     

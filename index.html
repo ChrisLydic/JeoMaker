@@ -10,7 +10,6 @@
 </head>
 
 <body>
-    
     <!--------------------------->
     <!--  HTML for main menu   -->
     <!--------------------------->
@@ -95,7 +94,6 @@
     <!-- HTML for playing games -->
     <!---------------------------->
     
-    
     <!-- Drop down menu for Play State -->
     <div class="formCont" id="playForm">
     <form>
@@ -115,12 +113,12 @@
     <!-- Player Creation Menu -->
     <div class="formCont" id="playerForm">
     <form id="player">
-        <h1 id="playerHeader">Create Teams</h1>
+        <h1 id="playerHeader">Create Players</h1>
         
         <select id="players" size="8" style="width:215px;float:left;"></select>
         
         <div id="playerCont" style="float:left;">
-            <input type="text" name="playerName" placeholder="Team Name" size="25" maxlength="50" style="float:left;">
+            <input type="text" name="playerName" placeholder="Player Name" size="25" maxlength="50" style="float:left;">
 
             <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
                 style="width:50px;height:50px;float:left;">
@@ -148,6 +146,17 @@
     </form>
     </div>
     
+    <!-- Final Question player betting input -->
+    <div style="background-image:none;" class="formCont" id="finalForm">
+        <div id="finalPlayers"></div>
+    </div>
+    
+    
+    <!-------------------------------------------------->
+    <!-- Target that Phaser generates the canvas from -->
+    <!-------------------------------------------------->
+    
     <div id='gameDiv'></div>
+    
 </body>
 </html>

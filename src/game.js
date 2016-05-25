@@ -336,6 +336,12 @@ Player.prototype.edit = function ( name, avatar ) {
     this.avatar = avatar;
 };
 
+//Sort function for players, used to find winner
+//This sorts in reverse because the winner should be the first item in the array
+playerSort = function ( a, b ) {
+    return ( b.score - a.score );
+}
+
 
 //Rectangular Button Class
 //Custom buttons that use canvas drawing and Phaser
