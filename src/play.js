@@ -208,7 +208,7 @@ var playState = {
         //Setup
         var numPlayers;
         var playerWidths;
-        
+        console.log(width);
         //Calculate number of players to draw
         playerWidths = this.countPlayers( width, offset );
         numPlayers = playerWidths.length;
@@ -238,6 +238,11 @@ var playState = {
                 }
                 
                 this.drawPlayer( x, y, index, amount );
+                x += playerWidths[index - offset];
+            }
+        } else if ( amount == 'leaderboard' ) {
+            for ( var index = offset; index < ( numPlayers + offset ); index++ ) {
+                this.drawPlayerScale( x, y, index, 1 );
                 x += playerWidths[index - offset];
             }
         } else {
@@ -733,18 +738,39 @@ var playState = {
         var halfWidth = w / 2;
         var posX = 0;
         var posY = h - ( btnHeight + pad );
+        var posYLabel = posY + ( btnHeight / 2 );
+        var barStyles = {
+            font: '30px Arial',
+            fill: LABEL_WHITE
+        };
         
-        //Back button
+        //View board button
         posX = halfWidth - ( pad + btnWidth );
         
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
                 BLUE, playState.rebuild ) );
+                
+        //View board label
+        posX += btnWidth / 2;
         
-        //Finish button
+        var label2 = game.add.text( posX, posYLabel, 'View Board', barStyles );
+        
+        label2.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label2 );
+        
+        //Main menu button
         posX = halfWidth + pad;
         
         playState.buttons.push( new RectButton( posX, posY, btnWidth, btnHeight,
                 BLUE, playState.startMenu ) );
+        
+        //Main menu label
+        posX += btnWidth / 2;
+        
+        var label3 = game.add.text( posX, posYLabel, 'Main Menu', barStyles );
+        
+        label3.anchor.setTo( 0.5, 0.5 );
+        layers.textLayer.add( label3 );
         
         var scale = 4;
         var playerWidths = playState.countPlayers( w, 0 );
@@ -794,12 +820,15 @@ var playState = {
     
     //Handles drawing players for answers, questions, final jeopardy, and leaderboard
     makePlayersAQ: function ( value, playerSpace, offs ) {
+        var playerPad = 25;
+        var playerHeight = 50;
+        
         if ( playState.oneLineFit( w, offs ) ) {
             var playerWidthsArr = playState.countPlayers( w, offs );
-            var playerWidths = offs;
+            var playerWidths = 0;
             
             //Get width the players will take up
-            for ( var i = offs; i < playerWidthsArr.length; i++ ){
+            for ( var i = 0; i < playerWidthsArr.length; i++ ){
                 playerWidths += playerWidthsArr[i];
             }
             

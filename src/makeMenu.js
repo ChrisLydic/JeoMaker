@@ -39,21 +39,62 @@ var makeMenuState = {
         var desc2 = 'A normal round of Jeopardy, followed by double Jeopardy,'
                 + ' followed by final Jeopardy.';
         
-        var font1 = '30px Arial';
-        var textValues = {
+        var roundValues = {
+            font: '30px Arial',
+            fill: LABEL_WHITE
+        };
+        
+        var descValues = {
             font: '12px Arial',
             fill: LABEL_WHITE,
             wordWrap: true,
             wordWrapWidth: w/2
         };
         
-        var buttonOne = new LabelButton( 'One Round', font1, LABEL_WHITE, 'center',
-                false, game, game.world.centerX, game.world.centerY - 50, 'button',
-                partial( this.makeBoard, false ), this );
+        var padding = 5;
+        var roundHeight = 30;
         
-        var buttonDouble = new LabelButton( 'Double', font1, LABEL_WHITE, 'center',
-                false, game, game.world.centerX, game.world.centerY - 10, 'button',
-                partial( this.makeBoard, true ), this );
+        var tempDesc1 = game.add.text( 0, 0, desc1, descValues );
+        var tempDesc1Height = tempDesc1.height;
+        tempDesc1.destroy();
+        
+        var tempDesc2 = game.add.text( 0, 0, desc2, descValues );
+        var tempDesc2Height = tempDesc2.height;
+        tempDesc2.destroy();
+        
+        var x = game.world.centerX;
+        var y = game.world.centerY - ( tempDesc1Height + ( padding * 5 ) +
+                ( roundHeight / 2 ) );
+        
+        //Button for single board
+        var singleRound = game.add.text( x, y, 'One Round', roundValues );
+
+        singleRound.anchor.setTo(0.5, 0.5);
+        
+        singleRound.inputEnabled = true;
+        singleRound.events.onInputDown.add( partial( this.makeBoard, false ), this );
+        
+        //desc1
+        y += ( tempDesc1Height / 2 ) + padding + ( roundHeight / 2 );
+        
+        var tempDesc1 = game.add.text( x, y, desc1, descValues );
+        tempDesc1.anchor.setTo(0.5, 0.5);
+        
+        //Button for double board (normal jeopardy)
+        y += ( tempDesc1Height / 2 ) + ( padding * 4 ) + ( roundHeight / 2 );
+        
+        var doubleRound = game.add.text( x, y, 'Double', roundValues );
+
+        doubleRound.anchor.setTo(0.5, 0.5);
+        
+        doubleRound.inputEnabled = true;
+        doubleRound.events.onInputDown.add( partial( this.makeBoard, true ), this );
+        
+        //desc2
+        y += ( tempDesc2Height / 2 ) + padding + ( roundHeight / 2 );
+        
+        var tempDesc2 = game.add.text( x, y, desc2, descValues );
+        tempDesc2.anchor.setTo(0.5, 0.5);
     },
     
     //Makes a menu containing all saved Jeo boards and a New Game option

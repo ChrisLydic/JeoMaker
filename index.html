@@ -17,14 +17,18 @@
     <div class="formCont" id="mHelp">
     <form>
         <p>Placeholder text.</p>
-        <input class="break" type="button" name="submit" value="Exit" onclick="menuState.hideHelp()">
+        
+        <input class="break" type="button" name="submit" value="Exit"
+            onclick="menuState.hideHelp()">
     </form>
     </div>
     
     <div class="formCont" id="about">
     <form>
         <p>Placeholder text.</p>
-        <input class="break" type="button" name="submit" value="Exit" onclick="menuState.hideAbout()">
+        
+        <input class="break" type="button" name="submit" value="Exit"
+            onclick="menuState.hideAbout()">
     </form>
     </div>
     
@@ -36,40 +40,60 @@
     <!-- Input forms -->
     <div class="formCont" id="topicForm">
     <form id="topic">
-        <input type="text" name="topicText" placeholder="Enter the topic" size="25" maxlength="50">
-        <input class="break" type="button" name="submit" value="Submit" onclick="makeState.getInput('topic')">
+        <input type="text" name="topicText" placeholder="Enter the topic"
+            size="25" maxlength="50">
+            
+        <input class="break" type="button" name="submit" value="Submit"
+            onclick="makeState.getInput('topic')">
     </form>
     </div>
     
     <div class="formCont" id="aqForm">
     <form id="aq">
-        <textarea name="answer" placeholder="Type answer here" rows="5" cols="30"></textarea>
-        <textarea class="break" placeholder="Type question here" name="question" rows="5" cols="30"></textarea>
-        <input class="break" type="button" name="submit" value="Submit" onclick="makeState.getInput('aq')">
+        <textarea name="answer" placeholder="Type answer here" rows="5" cols="30">
+        </textarea>
+        
+        <textarea class="break" placeholder="Type question here" name="question"
+            rows="5" cols="30"></textarea>
+        
+        <input class="break" type="button" name="submit" value="Submit"
+            onclick="makeState.getInput('aq')">
     </form>
     </div>
     
     <!-- MakeState menus -->
     <div class="formCont" id="menu">
     <form>
-        <input type="button" name="submit" value="Main Menu" onclick="makeState.menuInput(1)">
-        <input type="button" name="submit" value="Help" onclick="makeState.menuInput(2)">
-        <input type="button" name="submit" value="Back" onclick="makeState.menuInput(4)">
+        <input type="button" name="submit" value="Main Menu"
+            onclick="makeState.menuInput(1)">
+            
+        <input type="button" name="submit" value="Help"
+            onclick="makeState.menuInput(2)">
+            
+        <input type="button" name="submit" value="Back"
+            onclick="makeState.menuInput(4)">
+            
     </form>
     </div>
     
     <div class="formCont" id="save">
     <form>
         <p>Warning: The board is not completely filled out.</p>
-        <input class="break" type="button" name="submit" value="Save Anyways" onclick="makeState.menuInput(3)">
-        <input type="button" name="submit" value="Cancel" onclick="makeState.menuInput(4)">
+        
+        <input class="break" type="button" name="submit" value="Save Anyways"
+            onclick="makeState.menuInput(3)">
+            
+        <input type="button" name="submit" value="Cancel"
+            onclick="makeState.menuInput(4)">
     </form>
     </div>
     
     <div class="formCont" id="help">
     <form>
         <p>Placeholder text.</p>
-        <input class="break" type="button" name="submit" value="Exit" onclick="makeState.menuInput(4)">
+        
+        <input class="break" type="button" name="submit" value="Exit"
+            onclick="makeState.menuInput(4)">
     </form>
     </div>
     
@@ -77,15 +101,20 @@
     <div class="formCont" id="ddown">
     <form>
         <select id="down"></select>
-        <input class="break" type="button" name="submit" value="Select" onclick="makeMenuState.loadJeo()">
+        
+        <input class="break" type="button" name="submit" value="Select"
+            onclick="makeMenuState.loadJeo()">
     </form>
     </div>
     
     <!-- Naming Menu -->
     <div class="formCont" id="nameForm">
     <form id="name">
-        <input type="text" name="nameText" placeholder="Enter the game's name" size="25" maxlength="50">
-        <input class="break" type="button" name="submit" value="Submit" onclick="makeMenuState.inputName()">
+        <input type="text" name="nameText" placeholder="Enter the game's name"
+            size="25" maxlength="50">
+        
+        <input class="break" type="button" name="submit" value="Submit"
+            onclick="makeMenuState.inputName()">
     </form>
     </div>
     
@@ -98,7 +127,9 @@
     <div class="formCont" id="playForm">
     <form>
         <select id="games"></select>
-        <input class="break" type="button" name="submit" value="Select" onclick="playMenuState.loadJeo()"> <!---------------------------------->
+        
+        <input class="break" type="button" name="submit" value="Select"
+            onclick="playMenuState.loadJeo()">
     </form>
     </div>
     
@@ -106,7 +137,9 @@
     <div class="formCont" id="noSaves">
     <form>
         <p>There are no saved games.</p>
-        <input class="break" type="button" name="submit" value="Exit" onclick="playMenuState.return()">
+        
+        <input class="break" type="button" name="submit" value="Exit"
+            onclick="playMenuState.return()">
     </form>
     </div>
     
@@ -118,14 +151,19 @@
         <select id="players" size="8" style="width:215px;float:left;"></select>
         
         <div id="playerCont" style="float:left;">
-            <input type="text" name="playerName" placeholder="Player Name" size="25" maxlength="50" style="float:left;">
+            <input type="text" onkeydown="if (event.keyCode == 13) {return false;}"
+                name="playerName" placeholder="Player Name" size="25"
+                maxlength="50" style="float:left;">
 
-            <input class="break" type="color" id="colors" value="#FF0000" onchange="playMenuState.colorSet()"
+            <input class="break" type="color" id="colors" value="#FF0000"
+                onchange="playMenuState.colorSet()"
                 style="width:50px;height:50px;float:left;">
         
-            <input type="button" name="addPlayer" value="Add" onclick="playMenuState.makePlayer()">
+            <input type="button" name="addPlayer" value="Add"
+                onclick="playMenuState.makePlayer()">
         
-            <input type="button" name="startGame" value="Start" onclick="playMenuState.play()">
+            <input type="button" name="startGame" value="Start"
+                onclick="playMenuState.play()">
         </div>
     </form>
     </div>
@@ -133,16 +171,24 @@
     <!-- PlayState menus -->
     <div class="formCont" id="pMenu">
     <form>
-        <input type="button" name="submit" value="Main Menu" onclick="playState.menuInput(1)">
-        <input type="button" name="submit" value="Help" onclick="playState.menuInput(2)">
-        <input type="button" name="submit" value="Back" onclick="playState.menuInput(3)">
+        <input type="button" name="submit" value="Main Menu"
+            onclick="playState.menuInput(1)">
+            
+        <input type="button" name="submit" value="Help"
+            onclick="playState.menuInput(2)">
+            
+        <input type="button" name="submit" value="Back"
+            onclick="playState.menuInput(3)">
+            
     </form>
     </div>
     
     <div class="formCont" id="pHelp">
     <form>
         <p>Placeholder text.</p>
-        <input class="break" type="button" name="submit" value="Exit" onclick="playState.menuInput(3)">
+        
+        <input class="break" type="button" name="submit" value="Exit"
+            onclick="playState.menuInput(3)">
     </form>
     </div>
     
